@@ -1,127 +1,181 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Reglas del Servidor - SEP Minecraft</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="Sep - Reglas" />
-  <meta property="og:description" content="Entra y mira las reglas de sep" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEP Minecraft</title>
+    <meta property="og:title" content="Sep - Inicio" />
+  <meta property="og:description" content="Entra y descubre todo lo que te preparamos" />
   <meta property="og:image" content="https://cdn.discordapp.com/icons/1323414194019762227/fa2fd94082199f5ce581282ed4253297.png?size=2048" />
   <meta property="og:url" content="https://yalmil.github.io/sep/" />
   <meta property="og:type" content="website">
+  
   <style>
     body {
-      background-color: #0d0d0d;
-      color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      line-height: 1.6;
       margin: 0;
-      padding: 2rem;
-      max-width: 800px;
-      margin: auto;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #0a0a0a, #003333, #0a0a0a, #001a1a);
+      background-size: 400% 400%;
+      animation: neonBackground 20s ease infinite;
+      color: #fff;
+      text-align: center;
     }
-
+    @keyframes neonBackground {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
     h1 {
       color: #00ffcc;
-      text-align: center;
-      margin-bottom: 2rem;
-      text-shadow: 0 0 10px #00ffcc;
-    }
-
-    h2 {
-      color: #ffaa00;
+      font-size: 3rem;
       margin-top: 2rem;
-      text-shadow: 0 0 5px #ffaa00;
+      text-shadow: 0 0 15px #00ffcc;
     }
-
-    .regla {
-      margin: 1rem 0;
-      padding: 1rem;
+    .ip-box {
       background: #111;
-      border-left: 4px solid #00ffcc;
-      border-radius: 10px;
+      border: 2px solid #00ffcc;
+      border-radius: 15px;
+      padding: 1rem;
+      display: inline-block;
+      margin: 1rem auto;
+      box-shadow: 0 0 20px #00ffcc50;
     }
-
-    .regla strong {
-      display: block;
-      font-size: 1.1rem;
+    .ip-box p { margin: 0.5rem 0; }
+    .ip {
+      font-weight: bold;
+      font-size: 1.2rem;
       color: #0ff;
     }
-
+    .btn {
+      display: block;
+      background: #111;
+      border: 2px solid #0ff;
+      color: #0ff;
+      padding: 0.8rem 1.5rem;
+      margin: 0.5rem auto;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: 0.2s ease;
+      max-width: 300px;
+    }
+    .btn:hover {
+      background: #0ff;
+      color: #000;
+      box-shadow: 0 0 20px #0ff;
+    }
+    .anuncios {
+      background: #111;
+      border: 2px solid #ff0;
+      box-shadow: 0 0 20px #ff0a;
+      border-radius: 15px;
+      padding: 1rem;
+      margin: 2rem auto;
+      max-width: 90%;
+      text-align: left;
+    }
+    .anuncios h2 {
+      color: #ff0;
+      text-shadow: 0 0 10px #ff0;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .anuncios ul {
+      list-style: none;
+      padding: 0;
+      color: #fff;
+      margin: 0;
+    }
+    .anuncios li {
+      background: #222;
+      border: 1px solid #555;
+      padding: 0.7rem;
+      margin: 0.5rem 0;
+      border-radius: 10px;
+    }
+    .edit-icon {
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #ff0;
+      text-shadow: 0 0 5px #ff0;
+      transition: 0.3s;
+      user-select: none;
+    }
+    .edit-icon:hover { color: #fff; }
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    .social-icons a img {
+      height: 48px;
+      border-radius: 10px;
+      transition: 0.3s;
+    }
+    .social-icons a img:hover {
+      filter: brightness(1.2);
+    }
     .footer {
-      margin-top: 4rem;
-      text-align: center;
+      margin-top: 3rem;
       font-size: 0.9rem;
       color: #888;
     }
 
-    a {
-      color: #0ff;
-      text-decoration: none;
+    /* --- Modal contraseña --- */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
     }
-
-    a:hover {
-      text-decoration: underline;
+    .modal-content {
+      background: #111;
+      padding: 20px;
+      border-radius: 15px;
+      border: 2px solid #0ff;
+      box-shadow: 0 0 15px #0ff;
+      text-align: center;
+      max-width: 300px;
+      width: 90%;
     }
-
-    @media (max-width: 600px) {
-      body {
-        padding: 1rem;
-      }
+    .modal input {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #0ff;
+      background: #222;
+      color: #fff;
     }
+    .modal button {
+      padding: 8px 15px;
+      margin-top: 5px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #0ff;
+      color: #000;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .modal button:hover { background: #00cccc; }
   </style>
 </head>
 <body>
-  <h1>📜 Reglas del Servidor</h1>
-
-  <p><strong>Estas reglas aplican para todos los servidores que usan Discord, incluyendo el nuestro ⚠️</strong></p>
-
-  <h2>📘 Reglas de Discord</h2>
-
-  <div class="regla"><strong>1️⃣ Nada de contenido ilegal</strong>🚫 Drogas, violencia extrema o cualquier actividad ilegal está totalmente prohibido.</div>
-
-  <div class="regla"><strong>2️⃣ Respeto total</strong>🧠 No se permiten amenazas, acoso ni odio. Cero bullying, cero discriminación.</div>
-
-  <div class="regla"><strong>3️⃣ No NSFW ni contenido +18</strong>🔞 Todo contenido explícito está prohibido en servidores públicos. Mantén el entorno sano.</div>
-
-  <div class="regla"><strong>4️⃣ Prohibido compartir información personal</strong>🔐 Nada de números, direcciones, datos bancarios o cualquier cosa privada, tuya o de otros.</div>
-
-  <div class="regla"><strong>5️⃣ No spam ni bots maliciosos</strong>🤖 Spam, raids, flood o uso de bots dañinos son motivo de ban directo.</div>
-
-  <div class="regla"><strong>6️⃣ Nada de engaños o estafas</strong>💸 No se permite promocionar NFT, links falsos o robos de cuentas.</div>
-
-  <div class="regla"><strong>7️⃣ Respeta las decisiones del staff</strong>⚖️ Si el equipo de moderación toma una decisión, respétala. Si no estás de acuerdo, habla con calma.</div>
-
-  <div class="regla"><strong>8️⃣ Sigue las reglas de Discord</strong>📱 Para poder estar dentro de Minecraft SEP sin ningún problema, sigue las reglas de Discord.</div>
-
-  <h2>🎮 Reglas de Minecraft SEP</h2>
-
-  <div class="regla"><strong>1️⃣ Respeto entre jugadores</strong>🤝 Trata a todos con respeto. Nada de insultos ni actitudes tóxicas.</div>
-
-  <div class="regla"><strong>2️⃣ No hacer trampa</strong>🛑 Prohibido el uso de hacks, cheats o mods ilegales que alteren el juego.</div>
-
-  <div class="regla"><strong>3️⃣ No robar</strong>📦 No tomes objetos o recursos de otros jugadores sin permiso.</div>
-
-  <div class="regla"><strong>4️⃣ Construcción respetuosa</strong>🏠 No destruyas ni modifiques construcciones ajenas sin autorización.</div>
-
-  <div class="regla"><strong>5️⃣ No hacer spam</strong>🔇 Evita enviar mensajes repetitivos o innecesarios en el chat.</div>
-
-  <div class="regla"><strong>6️⃣ Prohibido grifear</strong>💣 No arruines construcciones ni causes daño intencionado.</div>
-
-  <div class="regla"><strong>7️⃣ Uso adecuado del chat</strong>💬 Mantén un ambiente sano. Nada de contenido ofensivo o temas inapropiados.</div>
-
-  <div class="regla"><strong>8️⃣ Prohibida la publicidad</strong>🚫 No promociones otros servidores, redes o canales.</div>
-
-  <div class="regla"><strong>9️⃣ PvP consensuado</strong>⚔️ El combate entre jugadores debe ser acordado previamente.</div>
-
-  <div class="regla"><strong>🔟 Construcciones apropiadas</strong>🚧 Nada ofensivo, subido de tono o fuera de lugar. ¡Todo apto para todos!</div>
-
-  <div class="regla"><strong>1️⃣1️⃣ Nombres apropiados</strong>👤 Usa nicks adecuados. Sin términos vulgares u ofensivos.</div>
-
-  <div class="regla"><strong>1️⃣2️⃣ Diviértete y crea</strong>🎮 El objetivo es disfrutar, construir, explorar y compartir buenos momentos.</div>
-
-  <div class="footer">
-    © 2025 SEP Minecraft | <a href="https://yalmil.github.io/sep">Volver al inicio</a>
-  </div>
+  <h1>Cerrado</h1>
+  <h2>Nada que ver con sep pero puedes ver https://yalmil.pages.dev/</h2>
 </body>
 </html>
+
+
+
+
+
+
