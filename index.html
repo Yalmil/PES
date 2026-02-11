@@ -57,7 +57,7 @@
       line-height: 1.6;
     }
 
-    /* Header mejorado */
+    
     header {
       background: linear-gradient(135deg, var(--primary-dark), var(--primary));
       padding: 1.5rem 1rem;
@@ -93,8 +93,6 @@
       font-weight: 600;
       position: relative;
     }
-
-    /* Botones superiores */
     .top-buttons {
       display: flex;
       justify-content: center;
@@ -142,7 +140,6 @@
       color: white;
     }
 
-    /* Contenido principal */
     main {
       flex: 1;
       padding: 2rem 1rem;
@@ -177,7 +174,6 @@
       font-weight: 600;
     }
 
-    /* Grid de juegos mejorado con miniaturas */
     .games-container {
       width: 100%;
     }
@@ -339,7 +335,6 @@
       font-size: 0.95rem;
     }
 
-    /* Estadísticas */
     .stats-container {
       display: flex;
       justify-content: space-around;
@@ -369,7 +364,6 @@
       color: var(--text-secondary);
     }
 
-    /* Footer mejorado */
     footer {
       text-align: center;
       padding: 1.5rem 1rem;
@@ -433,7 +427,6 @@
       color: var(--text-secondary);
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
       header h1 {
         font-size: 2rem;
@@ -492,7 +485,6 @@
       }
     }
 
-    /* Estilos para tema claro */
     body.light-theme {
       --background: #FFF8DC;
       --surface: #ffffff;
@@ -703,7 +695,7 @@
       });
     }
     
-    // Cargar noticias dinámicamente
+    // Cargar noticias
     function loadNews() {
       const newsContainer = document.getElementById('news-container');
       newsContainer.innerHTML = '';
@@ -722,15 +714,14 @@
       });
     }
     
-    // Cambiar entre temas claro/oscuro
+    // Cambiar temas
     function setupThemeToggle() {
       const themeToggle = document.getElementById('theme-toggle');
       const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
       
-      // Verificar tema guardado o preferencia del sistema
       const currentTheme = localStorage.getItem('theme') || (prefersDarkScheme.matches ? 'dark' : 'light');
       
-      // Aplicar tema guardado
+
       if (currentTheme === 'light') {
         document.body.classList.add('light-theme');
         themeToggle.innerHTML = '<i class="fas fa-moon"></i> Tema Oscuro';
@@ -739,15 +730,15 @@
         themeToggle.innerHTML = '<i class="fas fa-sun"></i> Tema Claro';
       }
       
-      // Configurar evento para cambiar tema
+
       themeToggle.addEventListener('click', function() {
         if (document.body.classList.contains('light-theme')) {
-          // Cambiar a tema oscuro
+     
           document.body.classList.remove('light-theme');
           localStorage.setItem('theme', 'dark');
           themeToggle.innerHTML = '<i class="fas fa-sun"></i> Tema Claro';
         } else {
-          // Cambiar a tema claro
+   
           document.body.classList.add('light-theme');
           localStorage.setItem('theme', 'light');
           themeToggle.innerHTML = '<i class="fas fa-moon"></i> Tema Oscuro';
@@ -755,30 +746,10 @@
       });
     }
     
-    // Configurar enlaces de Discord
-    function setupDiscordLinks() {
-      const discordLinks = document.querySelectorAll('#discord-invite, #footer-discord');
-      
-      discordLinks.forEach(link => {
-        link.href = discordInviteLink;
-        link.target = '_blank';
-        
-        link.addEventListener('click', function(e) {
-          if (discordInviteLink === "https://discord.gg/example") {
-            e.preventDefault();
-            alert("¡Por favor, reemplaza 'discordInviteLink' en el código JavaScript con tu enlace de invitación real!");
-          }
-        });
-      });
-    }
     
-    // Configurar enlaces de redes sociales
+
     function setupSocialLinks() {
-      // Estos son ejemplos, reemplaza con tus enlaces reales
-      document.getElementById('footer-twitter').href = '#';
-      document.getElementById('footer-youtube').href = '#';
-      
-      // Añadir eventos a botones de "Más información"
+
       document.addEventListener('click', function(e) {
         if (e.target.classList.contains('game-play-btn')) {
           const gameName = e.target.getAttribute('data-game');
@@ -787,18 +758,17 @@
       });
     }
     
-    // Detectar si el usuario prefiere tema claro por defecto
+
     function detectSystemTheme() {
       const prefersLightScheme = window.matchMedia('(prefers-color-scheme: light)');
       
-      // Si no hay tema guardado y el sistema prefiere tema claro, aplicarlo
+
       if (!localStorage.getItem('theme') && prefersLightScheme.matches) {
         document.body.classList.add('light-theme');
         document.getElementById('theme-toggle').innerHTML = '<i class="fas fa-moon"></i> Tema Oscuro';
       }
     }
     
-    // Inicializar cuando el DOM esté listo
     document.addEventListener('DOMContentLoaded', function() {
       loadGames();
       loadNews();
@@ -807,7 +777,6 @@
       setupSocialLinks();
       detectSystemTheme();
       
-      // Animación para el contador de miembros
       const memberCount = document.getElementById('total-members');
       let count = 120;
       const target = 150;
@@ -823,4 +792,5 @@
     });
   </script>
 </body>
+
 </html>
