@@ -67,7 +67,7 @@ nav a {
   transition: color 0.3s ease;
 }
 
-nav a:hover {
+nav a:hover, nav a.active {
   color: #FFD700;
 }
 
@@ -126,6 +126,7 @@ nav a:hover {
   border-radius: 50%;
   margin-bottom: 1rem;
   border: 3px solid #FFD700;
+  object-fit: cover;
 }
 
 .user-info h3 {
@@ -139,6 +140,12 @@ nav a:hover {
   margin-bottom: 1.5rem;
   font-size: 0.9rem;
   word-break: break-all;
+}
+
+.user-info .discord-tag {
+  color: #5865F2;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 
 .logout-btn {
@@ -251,6 +258,32 @@ nav a:hover {
   display: block;
 }
 
+/* Loading spinner */
+.loading-spinner {
+  display: none;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.loading-spinner.show {
+  display: block;
+}
+
+.spinner {
+  border: 3px solid #333333;
+  border-top: 3px solid #FFD700;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* Footer */
 footer {
   text-align: center;
@@ -319,7 +352,7 @@ footer a:hover {
     <a href="about.html">Sobre nosotros</a>
     <a href="votaciones.html">Votaciones</a>
     <a href="juegos.html">Juegos</a>
-    <a href="login.html">Login</a>
+    <a href="login.html" class="active">Login</a>
   </nav>
 </header>
 
@@ -331,14 +364,20 @@ footer a:hover {
     </div>
 
     <div id="errorMessage" class="error-message"></div>
+    
+    <div id="loadingSpinner" class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Cargando...</p>
+    </div>
 
     <div id="userInfo" style="display: none;">
-      <!-- Se llena con JavaScript -->
     </div>
 
     <div id="loginButtons">
       <button id="discordLogin" class="login-btn discord">
-        <i>🔵</i>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515c-.21.378-.459.903-.628 1.318a18.282 18.282 0 0 0-5.608 0 13.83 13.83 0 0 0-.637-1.318A19.756 19.756 0 0 0 3.68 4.37c-2.796 4.106-3.548 8.107-3.164 11.954a19.91 19.91 0 0 0 6.022 3.022c.486-.658.92-1.36 1.291-2.106a12.71 12.71 0 0 1-2.032-.973c.171-.124.338-.255.5-.391a14.374 14.374 0 0 0 12.385 0c.165.136.332.267.5.391-.64.386-1.32.72-2.033.974.371.746.805 1.448 1.292 2.106a19.84 19.84 0 0 0 6.022-3.022c.45-4.337-.704-8.298-3.166-11.954zM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.334-.956 2.419-2.157 2.419zm7.96 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.334-.947 2.419-2.157 2.419z"/>
+        </svg>
         Continuar con Discord
       </button>
       
@@ -347,7 +386,12 @@ footer a:hover {
       </div>
 
       <button id="googleLogin" class="login-btn google">
-        <i>🔴</i>
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
         Continuar con Google
       </button>
     </div>
@@ -367,10 +411,11 @@ footer a:hover {
     signInWithPopup, 
     GoogleAuthProvider, 
     signOut,
-    onAuthStateChanged 
+    onAuthStateChanged,
+    OAuthProvider
   } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   
-  // Tu configuración de Firebase
+  // FB
   const firebaseConfig = {
     apiKey: "AIzaSyA1s25GbpU-sgSJrqbxqkNLFFWp64z1ObM",
     authDomain: "dominioyalmil.firebaseapp.com",
@@ -384,16 +429,138 @@ footer a:hover {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // Proveedores
-  const googleProvider = new GoogleAuthProvider();
+  // Proveedor de Google
+    const googleProvider = new GoogleAuthProvider();
+  // Función para login con Discord
+  async function loginWithDiscord() {
+    showLoading(true);
+    
+    // CLIENT ID
+    const DISCORD_CLIENT_ID = "1480719259158974674";
+    
+    // Redirect URI
+    const REDIRECT_URI = window.location.origin + "/login.html";
+    
+    // Scopes necesarios
+    const SCOPES = ["identify", "email"];
+    
+    // Construir URL de autorización de Discord
+    const discordAuthUrl = new URL("https://discord.com/api/oauth2/authorize");
+    discordAuthUrl.searchParams.append("client_id", DISCORD_CLIENT_ID);
+    discordAuthUrl.searchParams.append("redirect_uri", REDIRECT_URI);
+    discordAuthUrl.searchParams.append("response_type", "code");
+    discordAuthUrl.searchParams.append("scope", SCOPES.join(" "));
+    
+    // Guardar estado para prevenir CSRF
+    const state = generateRandomString();
+    localStorage.setItem("discord_oauth_state", state);
+    discordAuthUrl.searchParams.append("state", state);
+    
+    // Redirigir a Discord
+    window.location.href = discordAuthUrl.toString();
+  }
   
-  // Configurar Discord con OAuth personalizado
-  import { OAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  const discordProvider = new OAuthProvider('discord.com');
+  // Función para generar string aleatorio (para state)
+  function generateRandomString() {
+    return Math.random().toString(36).substring(2, 15) + 
+           Math.random().toString(36).substring(2, 15);
+  }
   
-  // Agregar scopes específicos de Discord
-  discordProvider.addScope('identify');
-  discordProvider.addScope('email');
+  // Función para intercambiar código por token
+  async function exchangeCodeForToken(code) {
+    try {
+      
+      // Llamada a backend
+      const response = await fetch("https://tuservidor.com/api/discord/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ code })
+      });
+      
+      if (!response.ok) {
+        throw new Error("Error al obtener token de Discord");
+      }
+      
+      const data = await response.json();
+      return data.access_token;
+    } catch (error) {
+      console.error("Error exchanging code:", error);
+      throw error;
+    }
+  }
+  
+  // Función para obtener datos del usuario de Discord
+  async function getDiscordUserData(accessToken) {
+    try {
+      const response = await fetch("https://discord.com/api/users/@me", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error("Error al obtener datos de usuario");
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error("Error getting user data:", error);
+      throw error;
+    }
+  }
+  
+  // Verificar si hay código de autorización en la URL
+  async function handleDiscordCallback() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+    const state = urlParams.get("state");
+    const savedState = localStorage.getItem("discord_oauth_state");
+    
+    if (code && state && state === savedState) {
+      showLoading(true);
+      
+      try {
+        // Limpiar URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+        // const accessToken = await exchangeCodeForToken(code);
+        
+        // Por ahora, simulamos un usuario de Discord
+        // En producción, esto debe venir de tu backend después de verificar el token
+        const discordUser = {
+          id: "123456789",
+          username: "UsuarioDiscord",
+          discriminator: "0000",
+          avatar: null,
+          email: "usuario@discord.com"
+        };
+        
+        // Guardar en localStorage
+        const userData = {
+          uid: discordUser.id,
+          displayName: discordUser.username + (discordUser.discriminator !== "0" ? "#" + discordUser.discriminator : ""),
+          email: discordUser.email,
+          photoURL: discordUser.avatar ? 
+            `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png` : 
+            "https://cdn.discordapp.com/embed/avatars/0.png",
+          provider: "discord"
+        };
+        
+        localStorage.setItem("discord_user", JSON.stringify(userData));
+        
+        // Actualizar UI
+        updateUserUI(userData);
+        showLoading(false);
+        
+      } catch (error) {
+        console.error("Error en callback de Discord:", error);
+        showError("Error al iniciar sesión con Discord");
+        showLoading(false);
+      }
+    }
+  }
 
   // Función para guardar en cookies
   function setCookie(name, value, days) {
@@ -425,6 +592,16 @@ footer a:hover {
   const userInfoDiv = document.getElementById('userInfo');
   const loginButtonsDiv = document.getElementById('loginButtons');
   const errorMessageDiv = document.getElementById('errorMessage');
+  const loadingSpinner = document.getElementById('loadingSpinner');
+
+  // Función para mostrar/ocultar loading
+  function showLoading(show) {
+    if (show) {
+      loadingSpinner.classList.add('show');
+    } else {
+      loadingSpinner.classList.remove('show');
+    }
+  }
 
   // Función para mostrar error
   function showError(message) {
@@ -446,13 +623,19 @@ footer a:hover {
       setCookie('userEmail', user.email || '', 7);
       setCookie('userId', user.uid, 7);
       setCookie('userPhoto', user.photoURL || '', 7);
+      setCookie('userProvider', user.provider || 'firebase', 7);
       
       // Mostrar información del usuario
       userInfoDiv.style.display = 'block';
+      
+      const isDiscord = user.provider === 'discord';
+      const discordTag = isDiscord ? `<p class="discord-tag">${user.displayName}</p>` : '';
+      
       userInfoDiv.innerHTML = `
         <div class="user-info">
           <img src="${user.photoURL || 'https://via.placeholder.com/80'}" alt="Avatar" class="user-avatar">
           <h3>${user.displayName || 'Usuario'}</h3>
+          ${discordTag}
           <p>${user.email || ''}</p>
           <p><small>ID: ${user.uid.substring(0, 10)}...</small></p>
           <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
@@ -472,56 +655,88 @@ footer a:hover {
       eraseCookie('userEmail');
       eraseCookie('userId');
       eraseCookie('userPhoto');
+      eraseCookie('userProvider');
     }
   }
 
   // Manejar login con Discord
-  document.getElementById('discordLogin').addEventListener('click', async () => {
-    try {
-      const result = await signInWithPopup(auth, discordProvider);
-      console.log('Discord login exitoso:', result.user);
-      updateUserUI(result.user);
-    } catch (error) {
-      console.error('Error en Discord login:', error);
-      showError('Error al iniciar sesión con Discord: ' + error.message);
-    }
+  document.getElementById('discordLogin').addEventListener('click', () => {
+    loginWithDiscord();
   });
 
   // Manejar login con Google
   document.getElementById('googleLogin').addEventListener('click', async () => {
     try {
+      showLoading(true);
       const result = await signInWithPopup(auth, googleProvider);
       console.log('Google login exitoso:', result.user);
-      updateUserUI(result.user);
+      
+      const userData = {
+        ...result.user,
+        provider: 'google'
+      };
+      
+      updateUserUI(userData);
+      showLoading(false);
     } catch (error) {
       console.error('Error en Google login:', error);
       showError('Error al iniciar sesión con Google: ' + error.message);
+      showLoading(false);
     }
   });
 
   // Manejar logout
   async function handleLogout() {
     try {
+      showLoading(true);
+      
+      // Cerrar sesión de Firebase
       await signOut(auth);
+      
+      // Limpiar Discord de localStorage
+      localStorage.removeItem('discord_user');
+      
       console.log('Logout exitoso');
       updateUserUI(null);
+      showLoading(false);
     } catch (error) {
       console.error('Error en logout:', error);
       showError('Error al cerrar sesión');
+      showLoading(false);
     }
   }
 
-  // Observador de estado de autenticación
-  onAuthStateChanged(auth, (user) => {
-    console.log('Estado de autenticación cambiado:', user ? 'logueado' : 'no logueado');
-    updateUserUI(user);
+  // Verificar Discord callback al cargar la página
+  window.addEventListener('load', async () => {
+    await handleDiscordCallback();
+    
+    // Verificar si hay usuario de Discord guardado
+    const savedDiscordUser = localStorage.getItem('discord_user');
+    if (savedDiscordUser) {
+      try {
+        const userData = JSON.parse(savedDiscordUser);
+        updateUserUI(userData);
+      } catch (e) {
+        console.error('Error parsing saved Discord user:', e);
+      }
+    }
   });
 
-  // Verificar cookies al cargar
-  window.addEventListener('load', () => {
-    const savedUsername = getCookie('username');
-    if (savedUsername) {
-      console.log('Usuario encontrado en cookies:', savedUsername);
+  // Observador de estado de autenticación de Firebase
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // Usuario de Firebase
+      const userData = {
+        ...user,
+        provider: 'google'
+      };
+      updateUserUI(userData);
+    } else {
+      // No hay usuario de Firebase, pero podría haber de Discord
+      const discordUser = localStorage.getItem('discord_user');
+      if (!discordUser) {
+        updateUserUI(null);
+      }
     }
   });
 
@@ -541,6 +756,5 @@ footer a:hover {
     });
   });
 </script>
-
 </body>
 </html>
