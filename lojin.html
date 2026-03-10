@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Pes.com</title>
+<link rel="icon" href="" type="image/png">
+<link rel="canonical" href="https://pes.pages.dev/login">
+<meta name="title" content="Login - Pes.com">
+<meta name="description" content="Inicia sesión con Discord o Google">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Login - Pes.com">
+<meta property="og:description" content="Inicia sesión con Discord o Google">
+<meta property="og:image" content="">
+<meta property="og:url" content="https://pes.pages.dev/login">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #000000;
+  color: #ffffff;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header estilo Node.js */
+header {
+  padding: 2rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #333333;
+}
+
+.logo h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #FFD700; /* Amarillo */
+  letter-spacing: -0.5px;
+}
+
+.logo a {
+  text-decoration: none;
+  color: #FFD700;
+}
+
+nav {
+  display: flex;
+  gap: 2.5rem;
+}
+
+nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #FFD700;
+}
+
+/* Login container */
+.login-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-container {
+  max-width: 450px;
+  width: 100%;
+  background: #111111;
+  border: 1px solid #333333;
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.login-header h2 {
+  color: #FFD700;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.5px;
+}
+
+.login-header p {
+  color: #999999;
+  font-size: 0.95rem;
+}
+
+/* User info cuando ya está logueado */
+.user-info {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333333;
+}
+
+.user-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 3px solid #FFD700;
+}
+
+.user-info h3 {
+  color: #FFD700;
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.user-info p {
+  color: #999999;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+
+.logout-btn {
+  background: transparent;
+  color: #ff4444;
+  border: 1px solid #ff4444;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.logout-btn:hover {
+  background: #ff4444;
+  color: #ffffff;
+}
+
+/* Botones de login */
+.login-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid #333333;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+}
+
+.login-btn.discord {
+  background: #5865F2;
+  border-color: #5865F2;
+}
+
+.login-btn.discord:hover {
+  background: #4752c4;
+  border-color: #4752c4;
+}
+
+.login-btn.google {
+  background: #ffffff;
+  color: #333333;
+  border-color: #ffffff;
+}
+
+.login-btn.google:hover {
+  background: #f0f0f0;
+}
+
+.login-btn i {
+  font-size: 1.2rem;
+}
+
+/* Separador */
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #666666;
+  margin: 1.5rem 0;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #333333;
+}
+
+.separator span {
+  padding: 0 1rem;
+  font-size: 0.9rem;
+}
+
+/* Mensaje de error */
+.error-message {
+  background: rgba(255, 68, 68, 0.1);
+  color: #ff4444;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  border: 1px solid #ff4444;
+  display: none;
+}
+
+.error-message.show {
+  display: block;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid #333333;
+  color: #666666;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: #FFD700;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header {
+    padding: 1.5rem;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  nav {
+    gap: 1.5rem;
+  }
+
+  .login-section {
+    padding: 2rem;
+  }
+
+  .login-container {
+    padding: 2rem;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-container {
+  animation: fadeIn 0.5s ease;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <a href="index.html"><h1>Pes.com</h1></a>
+  </div>
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="about.html">Sobre nosotros</a>
+    <a href="votaciones.html">Votaciones</a>
+    <a href="juegos.html">Juegos</a>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
+
+<main class="login-section">
+  <div class="login-container">
+    <div class="login-header">
+      <h2>Bienvenido</h2>
+      <p>Inicia sesión para enviar propuestas y participar</p>
+    </div>
+
+    <div id="errorMessage" class="error-message"></div>
+
+    <div id="userInfo" style="display: none;">
+      <!-- Se llena con JavaScript -->
+    </div>
+
+    <div id="loginButtons">
+      <button id="discordLogin" class="login-btn discord">
+        <i>🔵</i>
+        Continuar con Discord
+      </button>
+      
+      <div class="separator">
+        <span>o</span>
+      </div>
+
+      <button id="googleLogin" class="login-btn google">
+        <i>🔴</i>
+        Continuar con Google
+      </button>
+    </div>
+  </div>
+</main>
+
+<footer>
+  © 2026 Yalmil.com — <a href="aviso-legal.html">Aviso legal</a> — <a href="privacidad.html">Privacidad</a>
+</footer>
+
+<!-- Firebase SDKs -->
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { 
+    getAuth, 
+    signInWithPopup, 
+    GoogleAuthProvider, 
+    signOut,
+    onAuthStateChanged 
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  
+  // Tu configuración de Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyA1s25GbpU-sgSJrqbxqkNLFFWp64z1ObM",
+    authDomain: "dominioyalmil.firebaseapp.com",
+    projectId: "dominioyalmil",
+    storageBucket: "dominioyalmil.firebasestorage.app",
+    messagingSenderId: "1073517122536",
+    appId: "1:1073517122536:web:8dfc307dfe7b54b9a18a5d"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Proveedores
+  const googleProvider = new GoogleAuthProvider();
+  
+  // Configurar Discord con OAuth personalizado
+  import { OAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  const discordProvider = new OAuthProvider('discord.com');
+  
+  // Agregar scopes específicos de Discord
+  discordProvider.addScope('identify');
+  discordProvider.addScope('email');
+
+  // Función para guardar en cookies
+  function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Strict";
+  }
+
+  function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  }
+
+  function eraseCookie(name) {
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Strict';
+  }
+
+  // Elementos del DOM
+  const userInfoDiv = document.getElementById('userInfo');
+  const loginButtonsDiv = document.getElementById('loginButtons');
+  const errorMessageDiv = document.getElementById('errorMessage');
+
+  // Función para mostrar error
+  function showError(message) {
+    errorMessageDiv.textContent = message;
+    errorMessageDiv.classList.add('show');
+    setTimeout(() => {
+      errorMessageDiv.classList.remove('show');
+    }, 5000);
+  }
+
+  // Función para actualizar UI según estado de autenticación
+  function updateUserUI(user) {
+    if (user) {
+      // Usuario logueado
+      loginButtonsDiv.style.display = 'none';
+      
+      // Guardar nombre en cookies (por 7 días)
+      setCookie('username', user.displayName || 'Usuario', 7);
+      setCookie('userEmail', user.email || '', 7);
+      setCookie('userId', user.uid, 7);
+      setCookie('userPhoto', user.photoURL || '', 7);
+      
+      // Mostrar información del usuario
+      userInfoDiv.style.display = 'block';
+      userInfoDiv.innerHTML = `
+        <div class="user-info">
+          <img src="${user.photoURL || 'https://via.placeholder.com/80'}" alt="Avatar" class="user-avatar">
+          <h3>${user.displayName || 'Usuario'}</h3>
+          <p>${user.email || ''}</p>
+          <p><small>ID: ${user.uid.substring(0, 10)}...</small></p>
+          <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
+        </div>
+      `;
+      
+      // Agregar evento al botón de logout
+      document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+      
+    } else {
+      // Usuario no logueado
+      loginButtonsDiv.style.display = 'block';
+      userInfoDiv.style.display = 'none';
+      
+      // Limpiar cookies
+      eraseCookie('username');
+      eraseCookie('userEmail');
+      eraseCookie('userId');
+      eraseCookie('userPhoto');
+    }
+  }
+
+  // Manejar login con Discord
+  document.getElementById('discordLogin').addEventListener('click', async () => {
+    try {
+      const result = await signInWithPopup(auth, discordProvider);
+      console.log('Discord login exitoso:', result.user);
+      updateUserUI(result.user);
+    } catch (error) {
+      console.error('Error en Discord login:', error);
+      showError('Error al iniciar sesión con Discord: ' + error.message);
+    }
+  });
+
+  // Manejar login con Google
+  document.getElementById('googleLogin').addEventListener('click', async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      console.log('Google login exitoso:', result.user);
+      updateUserUI(result.user);
+    } catch (error) {
+      console.error('Error en Google login:', error);
+      showError('Error al iniciar sesión con Google: ' + error.message);
+    }
+  });
+
+  // Manejar logout
+  async function handleLogout() {
+    try {
+      await signOut(auth);
+      console.log('Logout exitoso');
+      updateUserUI(null);
+    } catch (error) {
+      console.error('Error en logout:', error);
+      showError('Error al cerrar sesión');
+    }
+  }
+
+  // Observador de estado de autenticación
+  onAuthStateChanged(auth, (user) => {
+    console.log('Estado de autenticación cambiado:', user ? 'logueado' : 'no logueado');
+    updateUserUI(user);
+  });
+
+  // Verificar cookies al cargar
+  window.addEventListener('load', () => {
+    const savedUsername = getCookie('username');
+    if (savedUsername) {
+      console.log('Usuario encontrado en cookies:', savedUsername);
+    }
+  });
+
+  // Smooth scroll para los enlaces internos (anclas)
+  document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href');
+      const targetElement = document.querySelector(targetId);
+      
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
