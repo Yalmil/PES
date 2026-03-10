@@ -525,17 +525,7 @@ footer a:hover {
         // Limpiar URL
         window.history.replaceState({}, document.title, window.location.pathname);
         
-        // const accessToken = await exchangeCodeForToken(code);
-        
-        // Por ahora, simulamos un usuario de Discord
-        // En producción, esto debe venir de tu backend después de verificar el token
-        const discordUser = {
-          id: "123456789",
-          username: "UsuarioDiscord",
-          discriminator: "0000",
-          avatar: null,
-          email: "usuario@discord.com"
-        };
+       const accessToken = await exchangeCodeForToken(code);
         
         // Guardar en localStorage
         const userData = {
@@ -758,3 +748,4 @@ footer a:hover {
 </script>
 </body>
 </html>
+
