@@ -425,6 +425,8 @@ footer a:hover {
 
   const googleProvider = new GoogleAuthProvider();
   const discordProvider = new OAuthProvider("oidc.discord");
+  discordProvider.addScope("identify");
+  discordProvider.addScope("email");
 
   const userInfoDiv = document.getElementById("userInfo");
   const loginButtonsDiv = document.getElementById("loginButtons");
@@ -482,13 +484,30 @@ footer a:hover {
     eraseCookie("userProvider");
   }
 
-  function renderUser(user) {
+  function getDiscordAvatarUrl(profile) {
+    if (!profile || !profile.id || !profile.avatar) return "";
+    return `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=128`;
+  }
+
+  function getSavedDiscordProfile() {
+    try {
+      const raw = localStorage.getItem("discordProfile");
+      return raw ? JSON.parse(raw) : null;
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  function renderUser(user, profileOverride = null) {
     const provider = mapProvider(user);
+    const providerData = user.providerData && user.providerData[0] ? user.providerData[0] : null;
+    const savedDiscordProfile = provider === "discord" ? getSavedDiscordProfile() : null;
+    const profile = profileOverride || savedDiscordProfile || {};
     const userData = {
       uid: user.uid,
-      displayName: user.displayName || "Usuario",
-      email: user.email || "",
-      photoURL: user.photoURL || "https://via.placeholder.com/80",
+      displayName: profile.displayName || user.displayName || (providerData && providerData.displayName) || "Usuario",
+      email: profile.email || user.email || (providerData && providerData.email) || "",
+      photoURL: profile.photoURL || user.photoURL || (providerData && providerData.photoURL) || "https://via.placeholder.com/80",
       provider
     };
 
@@ -514,6 +533,7 @@ footer a:hover {
     loginButtonsDiv.style.display = "block";
     userInfoDiv.style.display = "none";
     userInfoDiv.innerHTML = "";
+    localStorage.removeItem("discordProfile");
     clearUserCookies();
   }
 
@@ -532,7 +552,15 @@ footer a:hover {
   async function loginWithDiscord() {
     try {
       showLoading(true);
-      await signInWithPopup(auth, discordProvider);
+      const result = await signInWithPopup(auth, discordProvider);
+      const profile = result.additionalUserInfo && result.additionalUserInfo.profile ? result.additionalUserInfo.profile : {};
+      const discordProfile = {
+        displayName: profile.global_name || profile.username || result.user.displayName || "Usuario",
+        email: profile.email || result.user.email || "",
+        photoURL: getDiscordAvatarUrl(profile) || result.user.photoURL || "https://via.placeholder.com/80"
+      };
+      localStorage.setItem("discordProfile", JSON.stringify(discordProfile));
+      renderUser(result.user, discordProfile);
     } catch (error) {
       console.error("Error Discord:", error);
       showError(`No se pudo iniciar sesión con Discord: ${error.message}`);
