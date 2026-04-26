@@ -1,0 +1,638 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Pes.com</title>
+<link rel="icon" href="" type="image/png">
+<link rel="canonical" href="https://pes.pages.dev/login">
+<meta name="title" content="Login - Pes.com">
+<meta name="description" content="Inicia sesiÃ³n con Discord o Google">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Login - Pes.com">
+<meta property="og:description" content="Inicia sesiÃ³n con Discord o Google">
+<meta property="og:image" content="">
+<meta property="og:url" content="https://pes.pages.dev/login">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #000000;
+  color: #ffffff;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header estilo Node.js */
+header {
+  padding: 2rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #333333;
+}
+
+.logo h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #FFD700; /* Amarillo */
+  letter-spacing: -0.5px;
+}
+
+.logo a {
+  text-decoration: none;
+  color: #FFD700;
+}
+
+nav {
+  display: flex;
+  gap: 2.5rem;
+}
+
+nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+nav a:hover, nav a.active {
+  color: #FFD700;
+}
+
+nav a.profile-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Login container */
+.login-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-container {
+  max-width: 450px;
+  width: 100%;
+  background: #111111;
+  border: 1px solid #333333;
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.login-header h2 {
+  color: #FFD700;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.5px;
+}
+
+.login-header p {
+  color: #999999;
+  font-size: 0.95rem;
+}
+
+/* User info cuando ya estÃ¡ logueado */
+.user-info {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  border: 1px solid #333333;
+}
+
+.user-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  border: 3px solid #FFD700;
+  object-fit: cover;
+}
+
+.user-info h3 {
+  color: #FFD700;
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.user-info p {
+  color: #999999;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+
+.user-info .discord-tag {
+  color: #5865F2;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.logout-btn {
+  background: transparent;
+  color: #ff4444;
+  border: 1px solid #ff4444;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.logout-btn:hover {
+  background: #ff4444;
+  color: #ffffff;
+}
+
+/* Botones de login */
+.login-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1.45rem;
+  margin-top: 0.4rem;
+}
+
+.login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid #333333;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+}
+
+.login-btn.discord {
+  background: #5865F2;
+  border-color: #5865F2;
+}
+
+.login-btn.discord:hover {
+  background: #4752c4;
+  border-color: #4752c4;
+}
+
+.login-btn.google {
+  background: #ffffff;
+  color: #333333;
+  border-color: #ffffff;
+}
+
+.login-btn.google:hover {
+  background: #f0f0f0;
+}
+
+.login-btn i {
+  font-size: 1.2rem;
+}
+
+/* Separador */
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #666666;
+  margin: 1.5rem 0;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #333333;
+}
+
+.separator span {
+  padding: 0 1rem;
+  font-size: 0.9rem;
+}
+
+/* Mensaje de error */
+.error-message {
+  background: rgba(255, 68, 68, 0.1);
+  color: #ff4444;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  border: 1px solid #ff4444;
+  display: none;
+}
+
+.error-message.show {
+  display: block;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: none;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.loading-spinner.show {
+  display: block;
+}
+
+.spinner {
+  border: 3px solid #333333;
+  border-top: 3px solid #FFD700;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid #333333;
+  color: #666666;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: #FFD700;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header {
+    padding: 1.5rem;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  nav {
+    gap: 1.5rem;
+  }
+
+  .login-section {
+    padding: 2rem;
+  }
+
+  .login-container {
+    padding: 2rem;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-container {
+  animation: fadeIn 0.5s ease;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <h1>Pes.com</h1>
+  </div>
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="propuestas.html">Propuestas</a>
+    <a href="about.html">Sobre nosotros</a>
+    <a href="votaciones.html">Votaciones</a>
+    <a href="juegos.html">Juegos</a>
+    <a href="lojin.html" class="active">Login</a>
+  </nav>
+</header>
+
+<main class="login-section">
+  <div class="login-container">
+    <div class="login-header">
+      <h2>Bienvenido</h2>
+      <p>Inicia sesión para enviar propuestas y participar</p>
+    </div>
+
+    <div id="errorMessage" class="error-message"></div>
+    
+    <div id="loadingSpinner" class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Cargando...</p>
+    </div>
+
+    <div id="userInfo" style="display: none;">
+    </div>
+
+        <div id="loginButtons" class="login-buttons">
+      <button id="discordLogin" class="login-btn discord" type="button">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M20.317 4.369A19.791 19.791 0 0 0 15.885 3c-.191.328-.403.77-.551 1.116a18.287 18.287 0 0 0-5.668 0A11.754 11.754 0 0 0 9.115 3a19.736 19.736 0 0 0-4.433 1.369C1.886 8.58 1.127 12.686 1.506 16.735a19.94 19.94 0 0 0 5.313 2.685c.428-.585.808-1.206 1.135-1.857-.625-.238-1.22-.534-1.774-.887.148-.108.292-.219.431-.334 3.422 1.603 7.141 1.603 10.523 0 .141.116.285.227.431.334-.556.354-1.153.651-1.779.89.327.649.707 1.269 1.136 1.855a19.932 19.932 0 0 0 5.315-2.685c.445-4.696-.759-8.765-3.604-12.366zM8.02 14.298c-1.037 0-1.887-.95-1.887-2.117 0-1.168.834-2.117 1.887-2.117 1.061 0 1.904.959 1.887 2.117 0 1.168-.835 2.117-1.887 2.117zm7.958 0c-1.038 0-1.888-.95-1.888-2.117 0-1.168.835-2.117 1.888-2.117 1.06 0 1.903.959 1.886 2.117 0 1.168-.834 2.117-1.886 2.117z"/>
+        </svg>
+        Continuar con Discord
+      </button>
+
+      <button id="googleLogin" class="login-btn google" type="button">
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Continuar con Google
+      </button>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Â© 2026 Yalmil.com â€” <a href="aviso-legal.html">Aviso legal</a> â€” <a href="privacidad.html">Privacidad</a>
+</footer>
+
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import {
+    getAuth,
+    signInWithPopup,
+    GoogleAuthProvider,
+    OAuthProvider,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA1s25GbpU-sgSJrqbxqkNLFFWp64z1ObM",
+    authDomain: "dominioyalmil.firebaseapp.com",
+    databaseURL: "https://dominioyalmil-default-rtdb.firebaseio.com",
+    projectId: "dominioyalmil",
+    storageBucket: "dominioyalmil.firebasestorage.app",
+    messagingSenderId: "1073517122536",
+    appId: "1:1073517122536:web:8dfc307dfe7b54b9a18a5d"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const googleProvider = new GoogleAuthProvider();
+  const discordProvider = new OAuthProvider("oidc.discord");
+  discordProvider.addScope("identify");
+  discordProvider.addScope("email");
+
+  const userInfoDiv = document.getElementById("userInfo");
+  const loginButtonsDiv = document.getElementById("loginButtons");
+  const errorMessageDiv = document.getElementById("errorMessage");
+  const loadingSpinner = document.getElementById("loadingSpinner");
+  const googleBtn = document.getElementById("googleLogin");
+  const discordBtn = document.getElementById("discordLogin");
+  const navLoginLink = document.querySelector('nav a[href="lojin.html"]');
+
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+      return decodeURIComponent(parts.pop().split(";").shift());
+    }
+    return "";
+  }
+
+  function updateNavProfile(user) {
+    if (!navLoginLink) return;
+    if (!navLoginLink.dataset.defaultLabel) {
+      navLoginLink.dataset.defaultLabel = navLoginLink.textContent.trim() || "Login";
+    }
+
+    const fallbackPhoto = getCookie("userPhoto");
+    const photoURL = (user && user.photoURL) || fallbackPhoto;
+
+    if (user && photoURL) {
+      navLoginLink.innerHTML = `<img src="${photoURL}" alt="Perfil" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #FFD700;display:block;">`;
+      navLoginLink.classList.add("profile-link");
+      navLoginLink.setAttribute("aria-label", "Perfil");
+      navLoginLink.removeAttribute("title");
+    } else {
+      navLoginLink.textContent = navLoginLink.dataset.defaultLabel;
+      navLoginLink.classList.remove("profile-link");
+      navLoginLink.removeAttribute("aria-label");
+    }
+  }
+
+  function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = `${name}=${encodeURIComponent(value || "")}${expires}; path=/; SameSite=Lax`;
+  }
+
+  function eraseCookie(name) {
+    document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax`;
+  }
+
+  function showLoading(show) {
+    loadingSpinner.classList.toggle("show", show);
+    googleBtn.disabled = show;
+    discordBtn.disabled = show;
+  }
+
+  function showError(message) {
+    errorMessageDiv.textContent = message;
+    errorMessageDiv.classList.add("show");
+    setTimeout(() => errorMessageDiv.classList.remove("show"), 5000);
+  }
+
+  function mapProvider(user) {
+    const providerId = user.providerData?.[0]?.providerId || "";
+    if (providerId === "google.com") return "google";
+    if (providerId.includes("discord")) return "discord";
+    return "firebase";
+  }
+
+  function persistUserCookies(userData) {
+    setCookie("username", userData.displayName || "Usuario", 7);
+    setCookie("userEmail", userData.email || "", 7);
+    setCookie("userId", userData.uid || "", 7);
+    setCookie("userPhoto", userData.photoURL || "", 7);
+    setCookie("userProvider", userData.provider || "firebase", 7);
+  }
+
+  function clearUserCookies() {
+    eraseCookie("username");
+    eraseCookie("userEmail");
+    eraseCookie("userId");
+    eraseCookie("userPhoto");
+    eraseCookie("userProvider");
+  }
+
+  function getDiscordAvatarUrl(profile) {
+    if (!profile || !profile.id || !profile.avatar) return "";
+    return `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.png?size=128`;
+  }
+
+  function getSavedDiscordProfile() {
+    try {
+      const raw = localStorage.getItem("discordProfile");
+      return raw ? JSON.parse(raw) : null;
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  function renderUser(user, profileOverride = null) {
+    const provider = mapProvider(user);
+    const providerData = user.providerData && user.providerData[0] ? user.providerData[0] : null;
+    const savedDiscordProfile = provider === "discord" ? getSavedDiscordProfile() : null;
+    const profile = profileOverride || savedDiscordProfile || {};
+    const userData = {
+      uid: user.uid,
+      displayName: profile.displayName || user.displayName || (providerData && providerData.displayName) || "Usuario",
+      email: profile.email || user.email || (providerData && providerData.email) || "",
+      photoURL: profile.photoURL || user.photoURL || (providerData && providerData.photoURL) || "https://via.placeholder.com/80",
+      provider
+    };
+
+    persistUserCookies(userData);
+    loginButtonsDiv.style.display = "none";
+    userInfoDiv.style.display = "block";
+
+    const providerLabel = provider === "discord" ? "Discord" : "Google";
+    userInfoDiv.innerHTML = `
+      <div class="user-info">
+        <img src="${userData.photoURL}" alt="Avatar" class="user-avatar">
+        <h3>${userData.displayName}</h3>
+        <p>${userData.email}</p>
+        <p><small>Proveedor: ${providerLabel}</small></p>
+        <button id="logoutBtn" class="logout-btn" type="button">Cerrar sesión</button>
+      </div>
+    `;
+
+    document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+  }
+
+  function renderLoggedOut() {
+    loginButtonsDiv.style.display = "block";
+    userInfoDiv.style.display = "none";
+    userInfoDiv.innerHTML = "";
+    localStorage.removeItem("discordProfile");
+    clearUserCookies();
+  }
+
+  async function loginWithGoogle() {
+    try {
+      showLoading(true);
+      await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      console.error("Error Google:", error);
+      showError(`No se pudo iniciar sesión con Google: ${error.message}`);
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  async function loginWithDiscord() {
+    try {
+      showLoading(true);
+      const result = await signInWithPopup(auth, discordProvider);
+      const profile = result.additionalUserInfo && result.additionalUserInfo.profile ? result.additionalUserInfo.profile : {};
+      const discordProfile = {
+        displayName: profile.global_name || profile.username || result.user.displayName || "Usuario",
+        email: profile.email || result.user.email || "",
+        photoURL: getDiscordAvatarUrl(profile) || result.user.photoURL || "https://via.placeholder.com/80"
+      };
+      localStorage.setItem("discordProfile", JSON.stringify(discordProfile));
+      renderUser(result.user, discordProfile);
+    } catch (error) {
+      console.error("Error Discord:", error);
+      showError(`No se pudo iniciar sesión con Discord: ${error.message}`);
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  async function handleLogout() {
+    try {
+      showLoading(true);
+      await signOut(auth);
+      renderLoggedOut();
+    } catch (error) {
+      console.error("Error logout:", error);
+      showError("No se pudo cerrar sesión.");
+    } finally {
+      showLoading(false);
+    }
+  }
+
+  googleBtn.addEventListener("click", loginWithGoogle);
+  discordBtn.addEventListener("click", loginWithDiscord);
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      renderUser(user);
+      updateNavProfile(user);
+    } else {
+      renderLoggedOut();
+      updateNavProfile(null);
+    }
+  });
+</script>
+</body>
+</html>

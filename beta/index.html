@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pes.com</title>
+<link rel="icon" href="" type="image/png">
+<link rel="canonical" href="https://pes.pages.dev">
+<meta name="title" content="Pes.com.">
+<meta name="description" content="Gato alien bebe conquistando Jerusalén con una bazooka">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pes.com">
+<meta property="og:description" content="Gato alien bebe conquistando Jerusalén con una bazooka">
+<meta property="og:image" content="">
+<meta property="og:url" content="https://pes.pages.dev">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pes.com">
+<meta name="twitter:description" content="Gato alien bebe conquistando Jerusalén con una bazooka">
+<meta name="twitter:image" content="">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #000000;
+  color: #ffffff;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header estilo Node.js */
+header {
+  padding: 2rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #333333;
+}
+
+.logo h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #FFD700; /* Amarillo */
+  letter-spacing: -0.5px;
+}
+
+nav {
+  display: flex;
+  gap: 2.5rem;
+}
+
+nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #FFD700;
+}
+
+nav a.profile-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hero section estilo Node.js */
+.hero-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.hero-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -2px;
+  color: #FFD700; /* Amarillo */
+  position: sticky;
+  top: 2rem;
+}
+
+.hero-description {
+  font-size: 1.2rem;
+  color: #cccccc;
+}
+
+.hero-description p {
+  margin-bottom: 1.5rem;
+}
+
+.hero-description .highlight {
+  color: #FFD700;
+  font-weight: 600;
+}
+
+/* Secciones generales */
+section {
+  margin-bottom: 6rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #FFD700;
+  position: sticky;
+  top: 2rem;
+}
+
+.section-content {
+  color: #cccccc;
+}
+
+.section-content p {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+/* Tarjetas */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.card {
+  background: #111111;
+  border: 1px solid #333333;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: #FFD700;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px -15px rgba(255, 215, 0, 0.3);
+}
+
+.card h3 {
+  color: #FFD700;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.card p {
+  color: #999999;
+  line-height: 1.6;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid #333333;
+  color: #666666;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: #FFD700;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header {
+    padding: 1.5rem;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  nav {
+    gap: 1.5rem;
+  }
+
+  .hero-section {
+    padding: 2rem;
+  }
+
+  .hero-container,
+  .section-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .hero-title,
+  .section-title {
+    position: static;
+    font-size: 3rem;
+  }
+}
+
+/* Animación sutil para el sticky */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+nav a:hover, nav a.active {
+  color: #FFD700;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <h1>Pes.com</h1>
+  </div>
+  <nav>
+    <a href="about.html">Sobre nosotros</a>
+    <a href="propuestas.html">Propuestas</a>
+    <a href="votaciones.html">Votaciones</a>
+    <a href="juegos.html">Juegos</a>
+    <a href="lojin.html" class="active">Login</a>
+  </nav>
+</header>
+
+<main class="hero-section">
+  
+  <section id="inicio">
+    <div class="hero-container">
+      <h1 class="hero-title">Test,<br>Test,<br>Test</h1>
+      <div class="hero-description">
+        <p class="highlight">Pes.com test</p>
+        <p>test</p>
+        <p>she so perfect</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="acerca">
+    <div class="section-container">
+      <h2 class="section-title">Descripción</h2>
+      <div class="section-content">
+        <p>Eron te espio.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid est ratione praesentium, nesciunt deleniti obcaecati quod itaque delectus natus tenetur ipsum incidunt quisquam officiis eligendi doloremque molestiae consequatur commodi debitis?.</p>
+        
+        <div class="cards-grid">
+          <div class="card">
+            <h3>Lorem</h3>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus porro eligendi fuga libero aut debitis dicta optio aliquid saepe provident molestiae praesentium pariatur, odio, iure nemo ipsa possimus quos nostrum.</p>
+          </div>
+          <div class="card">
+            <h3>Creaciones</h3>
+            <p>Da rienda suelta a tu imaginación con nuestras herramientas creativas.</p>
+          </div>
+          <div class="card">
+            <h3>Comunidad</h3>
+            <p>Comparte tus experiencias y conecta con otros usuarios.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <div class="section-container">
+      <h2 class="section-title">Contacto</h2>
+      <div class="section-content">
+        <p>¿Tienes preguntas o sugerencias? Me encantaría saber de ti. Puedes agregar aquí un formulario, enlaces externos o redes sociales.</p>
+        <p>Mientras tanto, puedes seguirnos en nuestras redes sociales para estar al tanto de las últimas novedades y actualizaciones.</p>
+        
+        <div class="cards-grid" style="grid-template-columns: 1fr;">
+          <div class="card">
+            <h3>Email</h3>
+            <p>contacto@yalmil.com</p>
+          </div>
+          <div class="card">
+            <h3>Twitter</h3>
+            <p>@yalmil</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Yalmil.com — <a href="aviso-legal.html">Aviso legal</a> — <a href="privacidad.html">Privacidad</a>
+</footer>
+
+<script>
+const sections = document.querySelectorAll("section");
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add("visible");
+    }
+  });
+}, {
+  threshold: 0.2,
+  rootMargin: "0px"
+});
+
+sections.forEach(section => {
+  observer.observe(section);
+});
+
+// Smooth scroll para los enlaces internos (anclas)
+document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const targetId = this.getAttribute('href');
+    const targetElement = document.querySelector(targetId);
+    
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  });
+});
+
+// Redirección normal para enlaces a páginas .html
+document.querySelectorAll('nav a[href$=".html"], footer a[href$=".html"]').forEach(link => {
+  link.addEventListener('click', function(e) {
+    // Permitir la navegación normal a los archivos .html
+    // No prevenimos el evento por defecto
+    // El navegador redirigirá naturalmente al archivo .html
+  });
+});
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA1s25GbpU-sgSJrqbxqkNLFFWp64z1ObM",
+  authDomain: "dominioyalmil.firebaseapp.com",
+  databaseURL: "https://dominioyalmil-default-rtdb.firebaseio.com",
+  projectId: "dominioyalmil",
+  storageBucket: "dominioyalmil.firebasestorage.app",
+  messagingSenderId: "1073517122536",
+  appId: "1:1073517122536:web:8dfc307dfe7b54b9a18a5d"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const navLoginLink = document.querySelector('nav a[href="lojin.html"]');
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return decodeURIComponent(parts.pop().split(";").shift());
+  }
+  return "";
+}
+
+function updateNavProfile(user) {
+  if (!navLoginLink) return;
+  if (!navLoginLink.dataset.defaultLabel) {
+    navLoginLink.dataset.defaultLabel = navLoginLink.textContent.trim() || "Login";
+  }
+
+  const fallbackPhoto = getCookie("userPhoto");
+  const photoURL = (user && user.photoURL) || fallbackPhoto;
+
+  if (user && photoURL) {
+    navLoginLink.innerHTML = `<img src="${photoURL}" alt="Perfil" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #FFD700;display:block;">`;
+    navLoginLink.classList.add("profile-link");
+    navLoginLink.setAttribute("aria-label", "Perfil");
+  } else {
+    navLoginLink.textContent = navLoginLink.dataset.defaultLabel;
+    navLoginLink.classList.remove("profile-link");
+    navLoginLink.removeAttribute("aria-label");
+  }
+}
+
+onAuthStateChanged(auth, user => updateNavProfile(user));
+</script>
+
+</body>
+</html>
