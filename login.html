@@ -7,10 +7,10 @@
 <link rel="icon" href="" type="image/png">
 <link rel="canonical" href="https://pes.pages.dev/login">
 <meta name="title" content="Login - Pes.com">
-<meta name="description" content="Inicia sesión con Google">
+<meta name="description" content="Inicia sesiÃ³n con Discord o Google">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Login - Pes.com">
-<meta property="og:description" content="Inicia sesión con Google">
+<meta property="og:description" content="Inicia sesiÃ³n con Discord o Google">
 <meta property="og:image" content="">
 <meta property="og:url" content="https://pes.pages.dev/login">
 
@@ -110,7 +110,7 @@ nav a:hover, nav a.active {
   font-size: 0.95rem;
 }
 
-/* User info cuando ya está logueado */
+/* User info cuando ya estÃ¡ logueado */
 .user-info {
   text-align: center;
   margin-bottom: 2rem;
@@ -140,6 +140,12 @@ nav a:hover, nav a.active {
   margin-bottom: 1.5rem;
   font-size: 0.9rem;
   word-break: break-all;
+}
+
+.user-info .discord-tag {
+  color: #5865F2;
+  font-weight: 600;
+  margin-bottom: 1rem;
 }
 
 .logout-btn {
@@ -190,6 +196,16 @@ nav a:hover, nav a.active {
   box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
 }
 
+.login-btn.discord {
+  background: #5865F2;
+  border-color: #5865F2;
+}
+
+.login-btn.discord:hover {
+  background: #4752c4;
+  border-color: #4752c4;
+}
+
 .login-btn.google {
   background: #ffffff;
   color: #333333;
@@ -202,6 +218,27 @@ nav a:hover, nav a.active {
 
 .login-btn i {
   font-size: 1.2rem;
+}
+
+/* Separador */
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #666666;
+  margin: 1.5rem 0;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #333333;
+}
+
+.separator span {
+  padding: 0 1rem;
+  font-size: 0.9rem;
 }
 
 /* Mensaje de error */
@@ -315,7 +352,7 @@ footer a:hover {
     <a href="about.html">Sobre nosotros</a>
     <a href="votaciones.html">Votaciones</a>
     <a href="juegos.html">Juegos</a>
-    <a href="login.html" class="active">Login</a>
+    <a href="lojin.html" class="active">Login</a>
   </nav>
 </header>
 
@@ -336,8 +373,15 @@ footer a:hover {
     <div id="userInfo" style="display: none;">
     </div>
 
-    <div id="loginButtons">
-      <button id="googleLogin" class="login-btn google">
+        <div id="loginButtons" class="login-buttons">
+      <button id="discordLogin" class="login-btn discord" type="button">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M20.317 4.369A19.791 19.791 0 0 0 15.885 3c-.191.328-.403.77-.551 1.116a18.287 18.287 0 0 0-5.668 0A11.754 11.754 0 0 0 9.115 3a19.736 19.736 0 0 0-4.433 1.369C1.886 8.58 1.127 12.686 1.506 16.735a19.94 19.94 0 0 0 5.313 2.685c.428-.585.808-1.206 1.135-1.857-.625-.238-1.22-.534-1.774-.887.148-.108.292-.219.431-.334 3.422 1.603 7.141 1.603 10.523 0 .141.116.285.227.431.334-.556.354-1.153.651-1.779.89.327.649.707 1.269 1.136 1.855a19.932 19.932 0 0 0 5.315-2.685c.445-4.696-.759-8.765-3.604-12.366zM8.02 14.298c-1.037 0-1.887-.95-1.887-2.117 0-1.168.834-2.117 1.887-2.117 1.061 0 1.904.959 1.887 2.117 0 1.168-.835 2.117-1.887 2.117zm7.958 0c-1.038 0-1.888-.95-1.888-2.117 0-1.168.835-2.117 1.888-2.117 1.06 0 1.903.959 1.886 2.117 0 1.168-.834 2.117-1.886 2.117z"/>
+        </svg>
+        Continuar con Discord
+      </button>
+
+      <button id="googleLogin" class="login-btn google" type="button">
         <svg width="20" height="20" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -351,173 +395,174 @@ footer a:hover {
 </main>
 
 <footer>
-  © 2026 Yalmil.com — <a href="aviso-legal.html">Aviso legal</a> — <a href="privacidad.html">Privacidad</a>
+  Â© 2026 Yalmil.com â€” <a href="aviso-legal.html">Aviso legal</a> â€” <a href="privacidad.html">Privacidad</a>
 </footer>
 
 <!-- Firebase SDKs -->
 <script type="module">
-  // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { 
-    getAuth, 
-    signInWithPopup, 
-    GoogleAuthProvider, 
+  import {
+    getAuth,
+    signInWithPopup,
+    GoogleAuthProvider,
+    OAuthProvider,
     signOut,
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  
-  // FB
+
   const firebaseConfig = {
     apiKey: "AIzaSyA1s25GbpU-sgSJrqbxqkNLFFWp64z1ObM",
     authDomain: "dominioyalmil.firebaseapp.com",
+    databaseURL: "https://dominioyalmil-default-rtdb.firebaseio.com",
     projectId: "dominioyalmil",
     storageBucket: "dominioyalmil.firebasestorage.app",
     messagingSenderId: "1073517122536",
     appId: "1:1073517122536:web:8dfc307dfe7b54b9a18a5d"
   };
 
-  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  // Proveedor de Google
   const googleProvider = new GoogleAuthProvider();
+  const discordProvider = new OAuthProvider("oidc.discord");
 
-  // Función para guardar en cookies
+  const userInfoDiv = document.getElementById("userInfo");
+  const loginButtonsDiv = document.getElementById("loginButtons");
+  const errorMessageDiv = document.getElementById("errorMessage");
+  const loadingSpinner = document.getElementById("loadingSpinner");
+  const googleBtn = document.getElementById("googleLogin");
+  const discordBtn = document.getElementById("discordLogin");
+
   function setCookie(name, value, days) {
     let expires = "";
     if (days) {
       const date = new Date();
-      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
       expires = "; expires=" + date.toUTCString();
     }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Strict";
+    document.cookie = `${name}=${encodeURIComponent(value || "")}${expires}; path=/; SameSite=Lax`;
   }
 
   function eraseCookie(name) {
-    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Strict';
+    document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax`;
   }
 
-  // Elementos del DOM
-  const userInfoDiv = document.getElementById('userInfo');
-  const loginButtonsDiv = document.getElementById('loginButtons');
-  const errorMessageDiv = document.getElementById('errorMessage');
-  const loadingSpinner = document.getElementById('loadingSpinner');
-
-  // Función para mostrar/ocultar loading
   function showLoading(show) {
-    if (show) {
-      loadingSpinner.classList.add('show');
-    } else {
-      loadingSpinner.classList.remove('show');
-    }
+    loadingSpinner.classList.toggle("show", show);
+    googleBtn.disabled = show;
+    discordBtn.disabled = show;
   }
 
-  // Función para mostrar error
   function showError(message) {
     errorMessageDiv.textContent = message;
-    errorMessageDiv.classList.add('show');
-    setTimeout(() => {
-      errorMessageDiv.classList.remove('show');
-    }, 5000);
+    errorMessageDiv.classList.add("show");
+    setTimeout(() => errorMessageDiv.classList.remove("show"), 5000);
   }
 
-  // Función para actualizar UI según estado de autenticación
-  function updateUserUI(user) {
-    if (user) {
-      // Usuario logueado
-      loginButtonsDiv.style.display = 'none';
-      
-      // Guardar nombre en cookies (por 7 días)
-      setCookie('username', user.displayName || 'Usuario', 7);
-      setCookie('userEmail', user.email || '', 7);
-      setCookie('userId', user.uid, 7);
-      setCookie('userPhoto', user.photoURL || '', 7);
-      setCookie('userProvider', 'google', 7);
-      
-      // Mostrar información del usuario
-      userInfoDiv.style.display = 'block';
-      
-      userInfoDiv.innerHTML = `
-        <div class="user-info">
-          <img src="${user.photoURL || 'https://via.placeholder.com/80'}" alt="Avatar" class="user-avatar">
-          <h3>${user.displayName || 'Usuario'}</h3>
-          <p>${user.email || ''}</p>
-          <p><small>ID: ${user.uid.substring(0, 10)}...</small></p>
-          <button id="logoutBtn" class="logout-btn">Cerrar sesión</button>
-        </div>
-      `;
-      
-      // Agregar evento al botón de logout
-      document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-      
-    } else {
-      // Usuario no logueado
-      loginButtonsDiv.style.display = 'block';
-      userInfoDiv.style.display = 'none';
-      
-      // Limpiar cookies
-      eraseCookie('username');
-      eraseCookie('userEmail');
-      eraseCookie('userId');
-      eraseCookie('userPhoto');
-      eraseCookie('userProvider');
-    }
+  function mapProvider(user) {
+    const providerId = user.providerData?.[0]?.providerId || "";
+    if (providerId === "google.com") return "google";
+    if (providerId.includes("discord")) return "discord";
+    return "firebase";
   }
 
-  // Manejar login con Google
-  document.getElementById('googleLogin').addEventListener('click', async () => {
+  function persistUserCookies(userData) {
+    setCookie("username", userData.displayName || "Usuario", 7);
+    setCookie("userEmail", userData.email || "", 7);
+    setCookie("userId", userData.uid || "", 7);
+    setCookie("userPhoto", userData.photoURL || "", 7);
+    setCookie("userProvider", userData.provider || "firebase", 7);
+  }
+
+  function clearUserCookies() {
+    eraseCookie("username");
+    eraseCookie("userEmail");
+    eraseCookie("userId");
+    eraseCookie("userPhoto");
+    eraseCookie("userProvider");
+  }
+
+  function renderUser(user) {
+    const provider = mapProvider(user);
+    const userData = {
+      uid: user.uid,
+      displayName: user.displayName || "Usuario",
+      email: user.email || "",
+      photoURL: user.photoURL || "https://via.placeholder.com/80",
+      provider
+    };
+
+    persistUserCookies(userData);
+    loginButtonsDiv.style.display = "none";
+    userInfoDiv.style.display = "block";
+
+    const providerLabel = provider === "discord" ? "Discord" : "Google";
+    userInfoDiv.innerHTML = `
+      <div class="user-info">
+        <img src="${userData.photoURL}" alt="Avatar" class="user-avatar">
+        <h3>${userData.displayName}</h3>
+        <p>${userData.email}</p>
+        <p><small>Proveedor: ${providerLabel}</small></p>
+        <button id="logoutBtn" class="logout-btn" type="button">Cerrar sesión</button>
+      </div>
+    `;
+
+    document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+  }
+
+  function renderLoggedOut() {
+    loginButtonsDiv.style.display = "block";
+    userInfoDiv.style.display = "none";
+    userInfoDiv.innerHTML = "";
+    clearUserCookies();
+  }
+
+  async function loginWithGoogle() {
     try {
       showLoading(true);
-      const result = await signInWithPopup(auth, googleProvider);
-      console.log('Google login exitoso:', result.user);
-      
-      updateUserUI(result.user);
-      showLoading(false);
+      await signInWithPopup(auth, googleProvider);
     } catch (error) {
-      console.error('Error en Google login:', error);
-      showError('Error al iniciar sesión con Google: ' + error.message);
+      console.error("Error Google:", error);
+      showError(`No se pudo iniciar sesión con Google: ${error.message}`);
+    } finally {
       showLoading(false);
     }
-  });
+  }
 
-  // Manejar logout
+  async function loginWithDiscord() {
+    try {
+      showLoading(true);
+      await signInWithPopup(auth, discordProvider);
+    } catch (error) {
+      console.error("Error Discord:", error);
+      showError(`No se pudo iniciar sesión con Discord: ${error.message}`);
+    } finally {
+      showLoading(false);
+    }
+  }
+
   async function handleLogout() {
     try {
       showLoading(true);
-      
-      // Cerrar sesión de Firebase
       await signOut(auth);
-      
-      console.log('Logout exitoso');
-      updateUserUI(null);
-      showLoading(false);
+      renderLoggedOut();
     } catch (error) {
-      console.error('Error en logout:', error);
-      showError('Error al cerrar sesión');
+      console.error("Error logout:", error);
+      showError("No se pudo cerrar sesión.");
+    } finally {
       showLoading(false);
     }
   }
 
-  // Observador de estado de autenticación de Firebase
-  onAuthStateChanged(auth, (user) => {
-    updateUserUI(user);
-  });
+  googleBtn.addEventListener("click", loginWithGoogle);
+  discordBtn.addEventListener("click", loginWithDiscord);
 
-  // Smooth scroll para los enlaces internos (anclas)
-  document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      const targetId = this.getAttribute('href');
-      const targetElement = document.querySelector(targetId);
-      
-      if (targetElement) {
-        targetElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    });
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      renderUser(user);
+    } else {
+      renderLoggedOut();
+    }
   });
 </script>
 </body>
