@@ -176,7 +176,7 @@ nav a.profile-link {
 .login-buttons {
   display: flex;
   flex-direction: column;
-  gap: 1.45rem;
+  gap: 1.8rem;
   margin-top: 0.4rem;
 }
 
@@ -352,7 +352,7 @@ footer a:hover {
 
 <header>
   <div class="logo">
-    <h1>Pes.com</h1>
+    <a id="logoLink" href="index.html"><h1>Pes.com</h1></a>
   </div>
   <nav>
     <a href="index.html">Inicio</a>
@@ -389,6 +389,8 @@ footer a:hover {
         Continuar con Discord
       </button>
 
+      <div class="separator"><span>o</span></div>
+
       <button id="googleLogin" class="login-btn google" type="button">
         <svg width="20" height="20" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -417,6 +419,7 @@ footer a:hover {
     signOut,
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyA1s25GbpU-sgSJrqbxqkNLFFWp64z1ObM",
@@ -430,6 +433,7 @@ footer a:hover {
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const db = getDatabase(app);
 
   const googleProvider = new GoogleAuthProvider();
   const discordProvider = new OAuthProvider("oidc.discord");
@@ -443,6 +447,7 @@ footer a:hover {
   const googleBtn = document.getElementById("googleLogin");
   const discordBtn = document.getElementById("discordLogin");
   const navLoginLink = document.querySelector('nav a[href="lojin.html"]');
+  const logoLink = document.getElementById("logoLink");
 
   function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -471,6 +476,61 @@ footer a:hover {
       navLoginLink.textContent = navLoginLink.dataset.defaultLabel;
       navLoginLink.classList.remove("profile-link");
       navLoginLink.removeAttribute("aria-label");
+    }
+  }
+
+  function normalizeEmail(email) {
+    return (email || "").trim().toLowerCase();
+  }
+
+  function collectAdminEmails(value, set) {
+    if (!value) return;
+    if (typeof value === "string" && value.includes("@")) {
+      set.add(normalizeEmail(value));
+      return;
+    }
+    if (Array.isArray(value)) {
+      value.forEach(item => collectAdminEmails(item, set));
+      return;
+    }
+    if (typeof value === "object") {
+      Object.entries(value).forEach(([key, val]) => {
+        if (key.includes("@")) set.add(normalizeEmail(key));
+        if (val === true && key) {
+          set.add(normalizeEmail(key.replace(/,/g, ".")));
+          set.add(normalizeEmail(decodeURIComponent(key)));
+        }
+        if (val && typeof val === "object" && typeof val.email === "string") {
+          set.add(normalizeEmail(val.email));
+        }
+        if (typeof val === "string" && val.includes("@")) {
+          set.add(normalizeEmail(val));
+        }
+      });
+    }
+  }
+
+  async function applyAdminLogoRoute(user) {
+    if (!logoLink) return;
+    logoLink.href = "index.html";
+
+    const email = normalizeEmail(user && user.email);
+    if (!email) return;
+
+    try {
+      const adminsSnap = await get(ref(db, "admins"));
+      if (!adminsSnap.exists()) return;
+
+      const adminsSet = new Set();
+      collectAdminEmails(adminsSnap.val(), adminsSet);
+
+      const emailComma = email.replace(/\./g, ",");
+      if (adminsSet.has(email) || adminsSet.has(emailComma)) {
+        logoLink.href = "admin.html";
+        logoLink.title = "Panel admin";
+      }
+    } catch (error) {
+      console.error("No se pudo comprobar admin:", error);
     }
   }
 
@@ -628,9 +688,11 @@ footer a:hover {
     if (user) {
       renderUser(user);
       updateNavProfile(user);
+      applyAdminLogoRoute(user);
     } else {
       renderLoggedOut();
       updateNavProfile(null);
+      applyAdminLogoRoute(null);
     }
   });
 </script>

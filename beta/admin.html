@@ -1,0 +1,362 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - Pes.com</title>
+<link rel="icon" href="" type="image/png">
+<link rel="canonical" href="https://pes.pages.dev/admin">
+<meta name="title" content="Admin Panel - Pes.com">
+<meta name="description" content="Panel de administracion de propuestas">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #000;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  padding: 2rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #333;
+}
+
+.logo a {
+  text-decoration: none;
+  color: #FFD700;
+}
+
+.logo h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+nav {
+  display: flex;
+  gap: 2rem;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+nav a:hover, nav a.active {
+  color: #FFD700;
+}
+
+nav a.profile-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+main {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  flex: 1;
+}
+
+.panel-header {
+  margin-bottom: 1.2rem;
+}
+
+.panel-header h2 {
+  color: #FFD700;
+  font-size: 2rem;
+}
+
+.panel-header p {
+  color: #aaa;
+}
+
+.alert {
+  border: 1px solid #333;
+  background: #111;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  color: #ddd;
+}
+
+.alert.error {
+  border-color: #ff4d4d;
+  color: #ff8080;
+}
+
+.list {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.propuesta-item {
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #101010;
+}
+
+.propuesta-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.4rem;
+  color: #b7b7b7;
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.propuesta-text {
+  color: #f0f0f0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid #333;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: #FFD700;
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  header {
+    padding: 1.2rem;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  main {
+    padding: 1rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <a id="logoLink" href="index.html"><h1>Pes.com</h1></a>
+  </div>
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="propuestas.html">Propuestas</a>
+    <a href="juegos.html">Juegos</a>
+    <a href="admin.html" class="active">Admin</a>
+    <a href="lojin.html">Login</a>
+  </nav>
+</header>
+
+<main>
+  <div class="panel-header">
+    <h2>Panel Admin</h2>
+    <p>Propuestas enviadas por la comunidad</p>
+  </div>
+
+  <div id="status" class="alert">Comprobando permisos...</div>
+  <div id="propuestasList" class="list" style="display:none;"></div>
+</main>
+
+<footer>
+  © 2026 Yalmil.com - <a href="aviso-legal.html">Aviso legal</a> - <a href="privacidad.html">Privacidad</a>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA1s25GbpU-sgSJrqbxqkNLFFWp64z1ObM",
+  authDomain: "dominioyalmil.firebaseapp.com",
+  databaseURL: "https://dominioyalmil-default-rtdb.firebaseio.com",
+  projectId: "dominioyalmil",
+  storageBucket: "dominioyalmil.firebasestorage.app",
+  messagingSenderId: "1073517122536",
+  appId: "1:1073517122536:web:8dfc307dfe7b54b9a18a5d"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+const statusEl = document.getElementById("status");
+const listEl = document.getElementById("propuestasList");
+const navLoginLink = document.querySelector('nav a[href="lojin.html"]');
+const logoLink = document.getElementById("logoLink");
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return decodeURIComponent(parts.pop().split(";").shift());
+  }
+  return "";
+}
+
+function updateNavProfile(user) {
+  if (!navLoginLink) return;
+  if (!navLoginLink.dataset.defaultLabel) {
+    navLoginLink.dataset.defaultLabel = navLoginLink.textContent.trim() || "Login";
+  }
+
+  const fallbackPhoto = getCookie("userPhoto");
+  const photoURL = (user && user.photoURL) || fallbackPhoto;
+
+  if (user && photoURL) {
+    navLoginLink.innerHTML = `<img src="${photoURL}" alt="Perfil" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #FFD700;display:block;">`;
+    navLoginLink.classList.add("profile-link");
+    navLoginLink.setAttribute("aria-label", "Perfil");
+  } else {
+    navLoginLink.textContent = navLoginLink.dataset.defaultLabel;
+    navLoginLink.classList.remove("profile-link");
+    navLoginLink.removeAttribute("aria-label");
+  }
+}
+
+function normalizeEmail(email) {
+  return (email || "").trim().toLowerCase();
+}
+
+function collectAdminEmails(value, set) {
+  if (!value) return;
+  if (typeof value === "string" && value.includes("@")) {
+    set.add(normalizeEmail(value));
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach(item => collectAdminEmails(item, set));
+    return;
+  }
+  if (typeof value === "object") {
+    Object.entries(value).forEach(([key, val]) => {
+      if (key.includes("@")) set.add(normalizeEmail(key));
+      if (val === true && key) {
+        set.add(normalizeEmail(key.replace(/,/g, ".")));
+        set.add(normalizeEmail(decodeURIComponent(key)));
+      }
+      if (val && typeof val === "object" && typeof val.email === "string") {
+        set.add(normalizeEmail(val.email));
+      }
+      if (typeof val === "string" && val.includes("@")) {
+        set.add(normalizeEmail(val));
+      }
+    });
+  }
+}
+
+async function isAdmin(user) {
+  const email = normalizeEmail(user && user.email);
+  if (!email) return false;
+
+  const snap = await get(ref(db, "admins"));
+  if (!snap.exists()) return false;
+
+  const adminsSet = new Set();
+  collectAdminEmails(snap.val(), adminsSet);
+
+  const emailComma = email.replace(/\./g, ",");
+  return adminsSet.has(email) || adminsSet.has(emailComma);
+}
+
+function formatDate(value) {
+  if (!value) return "Sin fecha";
+  const num = Number(value);
+  if (!Number.isFinite(num)) return "Sin fecha";
+  return new Date(num).toLocaleString("es-MX");
+}
+
+function renderPropuestas(data) {
+  const items = Object.entries(data || {}).map(([id, p]) => ({
+    id,
+    propuesta: p.propuesta || "(sin texto)",
+    userName: p.userName || "Usuario",
+    userEmail: p.userEmail || "sin email",
+    createdAt: p.createdAt || 0
+  }));
+
+  items.sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+
+  if (items.length === 0) {
+    listEl.innerHTML = '<div class="alert">No hay propuestas todavía.</div>';
+    return;
+  }
+
+  listEl.innerHTML = items.map(item => `
+    <article class="propuesta-item">
+      <div class="propuesta-top">
+        <span><strong>${item.userName}</strong> (${item.userEmail})</span>
+        <span>${formatDate(item.createdAt)}</span>
+      </div>
+      <p class="propuesta-text">${item.propuesta.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+    </article>
+  `).join("");
+}
+
+onAuthStateChanged(auth, async user => {
+  updateNavProfile(user);
+  logoLink.href = "index.html";
+
+  if (!user) {
+    statusEl.className = "alert error";
+    statusEl.textContent = "Debes iniciar sesión para acceder al panel admin.";
+    listEl.style.display = "none";
+    return;
+  }
+
+  try {
+    const admin = await isAdmin(user);
+
+    if (!admin) {
+      statusEl.className = "alert error";
+      statusEl.textContent = "No tienes permisos de administrador.";
+      listEl.style.display = "none";
+      return;
+    }
+
+    logoLink.href = "admin.html";
+
+    statusEl.className = "alert";
+    statusEl.textContent = "Acceso admin concedido. Cargando propuestas...";
+
+    const propuestasSnap = await get(ref(db, "propuestas"));
+    renderPropuestas(propuestasSnap.exists() ? propuestasSnap.val() : {});
+
+    statusEl.style.display = "none";
+    listEl.style.display = "grid";
+  } catch (error) {
+    console.error(error);
+    statusEl.className = "alert error";
+    statusEl.textContent = "No se pudo cargar el panel admin.";
+  }
+});
+</script>
+
+</body>
+</html>

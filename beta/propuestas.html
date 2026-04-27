@@ -52,6 +52,11 @@ header {
   letter-spacing: -0.5px;
 }
 
+.logo a {
+  text-decoration: none;
+  color: #FFD700;
+}
+
 nav {
   display: flex;
   gap: 2.5rem;
@@ -286,15 +291,14 @@ footer a:hover {
 
 <header>
   <div class="logo">
-    <h1>Pes.com</h1>
+    <a id="logoLink" href="index.html"><h1>Pes.com</h1></a>
   </div>
   <nav>
     <a href="index.html">Inicio</a>
     <a href="about.html">Sobre nosotros</a>
-    <a href="propuestas.html" class="active">Propuestas</a>
     <a href="votaciones.html">Votaciones</a>
     <a href="juegos.html">Juegos</a>
-    <a href="lojin.html">Login</a>
+    <a href="lojin.html" class="active">Login</a>
   </nav>
 </header>
 
@@ -329,7 +333,7 @@ footer a:hover {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getDatabase, ref, push, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, push, serverTimestamp, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA1s25GbpU-sgSJrqbxqkNLFFWp64z1ObM",
@@ -356,6 +360,7 @@ const submitProposalBtn = document.getElementById("submitProposalBtn");
 const proposalText = document.getElementById("proposalText");
 const proposalFeedback = document.getElementById("proposalFeedback");
 const navLoginLink = document.querySelector('nav a[href="lojin.html"]');
+const logoLink = document.getElementById("logoLink");
 
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {
@@ -417,6 +422,61 @@ function updateNavProfile(user) {
     navLoginLink.textContent = navLoginLink.dataset.defaultLabel;
     navLoginLink.classList.remove("profile-link");
     navLoginLink.removeAttribute("aria-label");
+  }
+}
+
+function normalizeEmail(email) {
+  return (email || "").trim().toLowerCase();
+}
+
+function collectAdminEmails(value, set) {
+  if (!value) return;
+  if (typeof value === "string" && value.includes("@")) {
+    set.add(normalizeEmail(value));
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach(item => collectAdminEmails(item, set));
+    return;
+  }
+  if (typeof value === "object") {
+    Object.entries(value).forEach(([key, val]) => {
+      if (key.includes("@")) set.add(normalizeEmail(key));
+      if (val === true && key) {
+        set.add(normalizeEmail(key.replace(/,/g, ".")));
+        set.add(normalizeEmail(decodeURIComponent(key)));
+      }
+      if (val && typeof val === "object" && typeof val.email === "string") {
+        set.add(normalizeEmail(val.email));
+      }
+      if (typeof val === "string" && val.includes("@")) {
+        set.add(normalizeEmail(val));
+      }
+    });
+  }
+}
+
+async function applyAdminLogoRoute(user) {
+  if (!logoLink) return;
+  logoLink.href = "index.html";
+
+  const email = normalizeEmail(user && user.email);
+  if (!email) return;
+
+  try {
+    const adminsSnap = await get(ref(db, "admins"));
+    if (!adminsSnap.exists()) return;
+
+    const adminsSet = new Set();
+    collectAdminEmails(adminsSnap.val(), adminsSet);
+
+    const emailComma = email.replace(/\./g, ",");
+    if (adminsSet.has(email) || adminsSet.has(emailComma)) {
+      logoLink.href = "admin.html";
+      logoLink.title = "Panel admin";
+    }
+  } catch (error) {
+    console.error("No se pudo comprobar admin:", error);
   }
 }
 
@@ -483,6 +543,7 @@ submitProposalBtn.addEventListener("click", async () => {
 onAuthStateChanged(auth, user => {
   currentUser = user;
   updateNavProfile(user);
+  applyAdminLogoRoute(user);
 
   if (user) {
     authStatus.textContent = `Sesion iniciada como ${user.displayName || user.email || "usuario"}.`;

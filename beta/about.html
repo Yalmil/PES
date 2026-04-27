@@ -53,6 +53,11 @@ header {
   letter-spacing: -0.5px;
 }
 
+.logo a {
+  text-decoration: none;
+  color: #FFD700;
+}
+
 nav {
   display: flex;
   gap: 2.5rem;
@@ -279,7 +284,7 @@ nav a:hover, nav a.active {
 
 <header>
   <div class="logo">
-    <h1>Pes.com</h1>
+    <a id="logoLink" href="index.html"><h1>Pes.com</h1></a>
   </div>
   <nav>
     <a href="index.html">Inicio</a>
@@ -295,8 +300,8 @@ nav a:hover, nav a.active {
   <section id="inicio" class="centered-section">
     <h1 class="hero-title">Sobre nosotros</h1>
     <div class="section-content">
-      <p class="highlight">idk</p>
-      <p>p.</p>
+      <p class="highlight">Somos un equipo apasionado por la innovación y la creatividad</p>
+      <p>Nuestra misión es crear experiencias únicas que combinen tecnología, arte y comunidad. Con sede en Jerusalén, trabajamos diariamente para conquistar nuevos horizontes digitales.</p>
     </div>
   </section>
 
@@ -399,6 +404,7 @@ document.querySelectorAll('nav a[href$=".html"], footer a[href$=".html"]').forEa
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA1s25GbpU-sgSJrqbxqkNLFFWp64z1ObM",
@@ -412,7 +418,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getDatabase(app);
 const navLoginLink = document.querySelector('nav a[href="lojin.html"]');
+const logoLink = document.getElementById("logoLink");
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
@@ -443,7 +451,65 @@ function updateNavProfile(user) {
   }
 }
 
-onAuthStateChanged(auth, user => updateNavProfile(user));
+function normalizeEmail(email) {
+  return (email || "").trim().toLowerCase();
+}
+
+function collectAdminEmails(value, set) {
+  if (!value) return;
+  if (typeof value === "string" && value.includes("@")) {
+    set.add(normalizeEmail(value));
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach(item => collectAdminEmails(item, set));
+    return;
+  }
+  if (typeof value === "object") {
+    Object.entries(value).forEach(([key, val]) => {
+      if (key.includes("@")) set.add(normalizeEmail(key));
+      if (val === true && key) {
+        set.add(normalizeEmail(key.replace(/,/g, ".")));
+        set.add(normalizeEmail(decodeURIComponent(key)));
+      }
+      if (val && typeof val === "object" && typeof val.email === "string") {
+        set.add(normalizeEmail(val.email));
+      }
+      if (typeof val === "string" && val.includes("@")) {
+        set.add(normalizeEmail(val));
+      }
+    });
+  }
+}
+
+async function applyAdminLogoRoute(user) {
+  if (!logoLink) return;
+  logoLink.href = "index.html";
+
+  const email = normalizeEmail(user && user.email);
+  if (!email) return;
+
+  try {
+    const adminsSnap = await get(ref(db, "admins"));
+    if (!adminsSnap.exists()) return;
+
+    const adminsSet = new Set();
+    collectAdminEmails(adminsSnap.val(), adminsSet);
+
+    const emailComma = email.replace(/\./g, ",");
+    if (adminsSet.has(email) || adminsSet.has(emailComma)) {
+      logoLink.href = "admin.html";
+      logoLink.title = "Panel admin";
+    }
+  } catch (error) {
+    console.error("No se pudo comprobar admin:", error);
+  }
+}
+
+onAuthStateChanged(auth, user => {
+  updateNavProfile(user);
+  applyAdminLogoRoute(user);
+});
 </script>
 
 </body>
