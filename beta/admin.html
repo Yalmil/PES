@@ -275,14 +275,40 @@ async function isAdmin(user) {
   const email = normalizeEmail(user && user.email);
   if (!email) return false;
 
-  const snap = await get(ref(db, "admins"));
-  if (!snap.exists()) return false;
+  const candidates = [
+    email,
+    email.replace(/\./g, ","),
+    encodeURIComponent(email)
+  ];
 
-  const adminsSet = new Set();
-  collectAdminEmails(snap.val(), adminsSet);
+  for (const key of candidates) {
+    try {
+      const directSnap = await get(ref(db, `admins/${key}`));
+      if (!directSnap.exists()) continue;
 
-  const emailComma = email.replace(/\./g, ",");
-  return adminsSet.has(email) || adminsSet.has(emailComma);
+      const value = directSnap.val();
+      if (value === true) return true;
+      if (typeof value === "string" && normalizeEmail(value) === email) return true;
+      if (value && typeof value === "object") {
+        if (typeof value.email === "string" && normalizeEmail(value.email) === email) return true;
+        if (value.admin === true || value.enabled === true) return true;
+      }
+    } catch (_error) {
+      // Ignoramos error por permisos y seguimos probando otros formatos.
+    }
+  }
+
+  try {
+    const snap = await get(ref(db, "admins"));
+    if (!snap.exists()) return false;
+
+    const adminsSet = new Set();
+    collectAdminEmails(snap.val(), adminsSet);
+    const emailComma = email.replace(/\./g, ",");
+    return adminsSet.has(email) || adminsSet.has(emailComma);
+  } catch (_error) {
+    return false;
+  }
 }
 
 function formatDate(value) {

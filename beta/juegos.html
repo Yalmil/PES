@@ -390,6 +390,47 @@ function collectAdminEmails(value, set) {
   }
 }
 
+async function isEmailAdmin(email) {
+  const normalized = normalizeEmail(email);
+  if (!normalized) return false;
+
+  const candidates = [
+    normalized,
+    normalized.replace(/\./g, ","),
+    encodeURIComponent(normalized)
+  ];
+
+  for (const key of candidates) {
+    try {
+      const directSnap = await get(ref(db, `admins/${key}`));
+      if (!directSnap.exists()) continue;
+
+      const value = directSnap.val();
+      if (value === true) return true;
+      if (typeof value === "string" && normalizeEmail(value) === normalized) return true;
+      if (value && typeof value === "object") {
+        if (typeof value.email === "string" && normalizeEmail(value.email) === normalized) return true;
+        if (value.admin === true || value.enabled === true) return true;
+      }
+    } catch (_error) {
+      // Ignoramos permisos en rutas concretas y seguimos con otros formatos.
+    }
+  }
+
+  try {
+    const adminsSnap = await get(ref(db, "admins"));
+    if (!adminsSnap.exists()) return false;
+
+    const adminsSet = new Set();
+    collectAdminEmails(adminsSnap.val(), adminsSet);
+
+    const emailComma = normalized.replace(/\./g, ",");
+    return adminsSet.has(normalized) || adminsSet.has(emailComma);
+  } catch (_error) {
+    return false;
+  }
+}
+
 async function applyAdminLogoRoute(user) {
   if (!logoLink) return;
   logoLink.href = "index.html";
@@ -397,20 +438,10 @@ async function applyAdminLogoRoute(user) {
   const email = normalizeEmail(user && user.email);
   if (!email) return;
 
-  try {
-    const adminsSnap = await get(ref(db, "admins"));
-    if (!adminsSnap.exists()) return;
-
-    const adminsSet = new Set();
-    collectAdminEmails(adminsSnap.val(), adminsSet);
-
-    const emailComma = email.replace(/\./g, ",");
-    if (adminsSet.has(email) || adminsSet.has(emailComma)) {
-      logoLink.href = "admin.html";
-      logoLink.title = "Panel admin";
-    }
-  } catch (error) {
-    console.error("No se pudo comprobar admin:", error);
+  const isAdmin = await isEmailAdmin(email);
+  if (isAdmin) {
+    logoLink.href = "admin.html";
+    logoLink.title = "Panel admin";
   }
 }
 
@@ -422,3 +453,4 @@ onAuthStateChanged(auth, user => {
 
 </body>
 </html>
+

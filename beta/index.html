@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -7,15 +7,15 @@
 <link rel="icon" href="" type="image/png">
 <link rel="canonical" href="https://pes.pages.dev">
 <meta name="title" content="Pes.com.">
-<meta name="description" content="Gato alien bebe conquistando Jerusalén con una bazooka">
+<meta name="description" content="Gato alien bebe conquistando JerusalÃ©n con una bazooka">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Pes.com">
-<meta property="og:description" content="Gato alien bebe conquistando Jerusalén con una bazooka">
+<meta property="og:description" content="Gato alien bebe conquistando JerusalÃ©n con una bazooka">
 <meta property="og:image" content="">
 <meta property="og:url" content="https://pes.pages.dev">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Pes.com">
-<meta name="twitter:description" content="Gato alien bebe conquistando Jerusalén con una bazooka">
+<meta name="twitter:description" content="Gato alien bebe conquistando JerusalÃ©n con una bazooka">
 <meta name="twitter:image" content="">
 
 <style>
@@ -241,7 +241,7 @@ footer a:hover {
   }
 }
 
-/* Animación sutil para el sticky */
+/* AnimaciÃ³n sutil para el sticky */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -288,7 +288,7 @@ nav a:hover, nav a.active {
 
   <section id="acerca">
     <div class="section-container">
-      <h2 class="section-title">Descripción</h2>
+      <h2 class="section-title">DescripciÃ³n</h2>
       <div class="section-content">
         <p>Eron te espio.</p>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid est ratione praesentium, nesciunt deleniti obcaecati quod itaque delectus natus tenetur ipsum incidunt quisquam officiis eligendi doloremque molestiae consequatur commodi debitis?.</p>
@@ -300,7 +300,7 @@ nav a:hover, nav a.active {
           </div>
           <div class="card">
             <h3>Creaciones</h3>
-            <p>Da rienda suelta a tu imaginación con nuestras herramientas creativas.</p>
+            <p>Da rienda suelta a tu imaginaciÃ³n con nuestras herramientas creativas.</p>
           </div>
           <div class="card">
             <h3>Comunidad</h3>
@@ -315,8 +315,8 @@ nav a:hover, nav a.active {
     <div class="section-container">
       <h2 class="section-title">Contacto</h2>
       <div class="section-content">
-        <p>¿Tienes preguntas o sugerencias? Me encantaría saber de ti. Puedes agregar aquí un formulario, enlaces externos o redes sociales.</p>
-        <p>Mientras tanto, puedes seguirnos en nuestras redes sociales para estar al tanto de las últimas novedades y actualizaciones.</p>
+        <p>Â¿Tienes preguntas o sugerencias? Me encantarÃ­a saber de ti. Puedes agregar aquÃ­ un formulario, enlaces externos o redes sociales.</p>
+        <p>Mientras tanto, puedes seguirnos en nuestras redes sociales para estar al tanto de las Ãºltimas novedades y actualizaciones.</p>
         
         <div class="cards-grid" style="grid-template-columns: 1fr;">
           <div class="card">
@@ -335,7 +335,7 @@ nav a:hover, nav a.active {
 </main>
 
 <footer>
-  © 2026 Yalmil.com — <a href="aviso-legal.html">Aviso legal</a> — <a href="privacidad.html">Privacidad</a>
+  Â© 2026 Yalmil.com â€” <a href="aviso-legal.html">Aviso legal</a> â€” <a href="privacidad.html">Privacidad</a>
 </footer>
 
 <script>
@@ -372,12 +372,12 @@ document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
   });
 });
 
-// Redirección normal para enlaces a páginas .html
+// RedirecciÃ³n normal para enlaces a pÃ¡ginas .html
 document.querySelectorAll('nav a[href$=".html"], footer a[href$=".html"]').forEach(link => {
   link.addEventListener('click', function(e) {
-    // Permitir la navegación normal a los archivos .html
+    // Permitir la navegaciÃ³n normal a los archivos .html
     // No prevenimos el evento por defecto
-    // El navegador redirigirá naturalmente al archivo .html
+    // El navegador redirigirÃ¡ naturalmente al archivo .html
   });
 });
 </script>
@@ -463,6 +463,47 @@ function collectAdminEmails(value, set) {
   }
 }
 
+async function isEmailAdmin(email) {
+  const normalized = normalizeEmail(email);
+  if (!normalized) return false;
+
+  const candidates = [
+    normalized,
+    normalized.replace(/\./g, ","),
+    encodeURIComponent(normalized)
+  ];
+
+  for (const key of candidates) {
+    try {
+      const directSnap = await get(ref(db, `admins/${key}`));
+      if (!directSnap.exists()) continue;
+
+      const value = directSnap.val();
+      if (value === true) return true;
+      if (typeof value === "string" && normalizeEmail(value) === normalized) return true;
+      if (value && typeof value === "object") {
+        if (typeof value.email === "string" && normalizeEmail(value.email) === normalized) return true;
+        if (value.admin === true || value.enabled === true) return true;
+      }
+    } catch (_error) {
+      // Ignoramos permisos en rutas concretas y seguimos con otros formatos.
+    }
+  }
+
+  try {
+    const adminsSnap = await get(ref(db, "admins"));
+    if (!adminsSnap.exists()) return false;
+
+    const adminsSet = new Set();
+    collectAdminEmails(adminsSnap.val(), adminsSet);
+
+    const emailComma = normalized.replace(/\./g, ",");
+    return adminsSet.has(normalized) || adminsSet.has(emailComma);
+  } catch (_error) {
+    return false;
+  }
+}
+
 async function applyAdminLogoRoute(user) {
   if (!logoLink) return;
   logoLink.href = "index.html";
@@ -470,20 +511,10 @@ async function applyAdminLogoRoute(user) {
   const email = normalizeEmail(user && user.email);
   if (!email) return;
 
-  try {
-    const adminsSnap = await get(ref(db, "admins"));
-    if (!adminsSnap.exists()) return;
-
-    const adminsSet = new Set();
-    collectAdminEmails(adminsSnap.val(), adminsSet);
-
-    const emailComma = email.replace(/\./g, ",");
-    if (adminsSet.has(email) || adminsSet.has(emailComma)) {
-      logoLink.href = "admin.html";
-      logoLink.title = "Panel admin";
-    }
-  } catch (error) {
-    console.error("No se pudo comprobar admin:", error);
+  const isAdmin = await isEmailAdmin(email);
+  if (isAdmin) {
+    logoLink.href = "admin.html";
+    logoLink.title = "Panel admin";
   }
 }
 
@@ -495,3 +526,4 @@ onAuthStateChanged(auth, user => {
 
 </body>
 </html>
+
