@@ -1,0 +1,572 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Votaciones - Pes.com</title>
+<link rel="icon" href="" type="image/png">
+<link rel="canonical" href="https://pes.pages.dev/votaciones">
+<meta name="title" content="Votaciones - Pes.com">
+<meta name="description" content="Crea y vota encuestas de la comunidad">
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #000;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  padding: 2rem 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #333;
+}
+
+.logo a {
+  text-decoration: none;
+  color: #FFD700;
+}
+
+.logo h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+nav {
+  display: flex;
+  gap: 2rem;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+nav a:hover, nav a.active {
+  color: #FFD700;
+}
+
+nav a.profile-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+main {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  flex: 1;
+}
+
+.hero {
+  margin-bottom: 1.2rem;
+}
+
+.hero h2 {
+  color: #FFD700;
+  font-size: 2rem;
+  margin-bottom: 0.4rem;
+}
+
+.hero p {
+  color: #acacac;
+}
+
+.notice {
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+  background: #111;
+  color: #d8d8d8;
+}
+
+.notice.error {
+  border-color: #ff4d4d;
+  color: #ff9090;
+}
+
+.admin-panel {
+  border: 1px solid #333;
+  border-radius: 12px;
+  background: #101010;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: none;
+}
+
+.admin-panel h3 {
+  color: #FFD700;
+  margin-bottom: 0.6rem;
+}
+
+.form-row {
+  display: grid;
+  gap: 0.6rem;
+  margin-bottom: 0.7rem;
+}
+
+.form-row input,
+.form-row textarea {
+  width: 100%;
+  background: #171717;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 0.7rem;
+}
+
+.form-row textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.helper {
+  font-size: 0.86rem;
+  color: #999;
+}
+
+.btn {
+  background: #FFD700;
+  color: #000;
+  border: 1px solid #FFD700;
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.polls {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.poll {
+  border: 1px solid #333;
+  border-radius: 12px;
+  background: #101010;
+  padding: 1rem;
+}
+
+.poll h4 {
+  color: #FFD700;
+  margin-bottom: 0.35rem;
+}
+
+.poll-meta {
+  color: #a9a9a9;
+  font-size: 0.86rem;
+  margin-bottom: 0.7rem;
+}
+
+.options {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  background: #181818;
+  border: 1px solid #2e2e2e;
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+}
+
+.option button {
+  background: transparent;
+  color: #fff;
+  border: 1px solid #4a4a4a;
+  border-radius: 7px;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+}
+
+.option button:hover {
+  border-color: #FFD700;
+  color: #FFD700;
+}
+
+.option button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid #333;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+footer a { color: #FFD700; text-decoration: none; }
+
+@media (max-width: 768px) {
+  header {
+    padding: 1.2rem;
+    flex-direction: column;
+    gap: 0.8rem;
+    text-align: center;
+  }
+
+  nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  main {
+    padding: 1rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <a id="logoLink" href="index.html"><h1>Pes.com</h1></a>
+  </div>
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="propuestas.html">Propuestas</a>
+    <a href="juegos.html">Juegos</a>
+    <a href="votaciones.html" class="active">Votaciones</a>
+    <a href="lojin.html">Login</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <h2>Votaciones</h2>
+    <p>Si eres admin puedes crear encuestas. Si no lo eres, podrás votar en las encuestas activas.</p>
+  </section>
+
+  <div id="status" class="notice">Comprobando sesión...</div>
+
+  <section id="adminPanel" class="admin-panel">
+    <h3>Crear encuesta</h3>
+    <div class="form-row">
+      <input id="pollTitle" type="text" placeholder="Título de la encuesta" maxlength="120">
+      <textarea id="pollOptions" placeholder="Opciones (una por línea)&#10;Ejemplo:&#10;Minecraft&#10;Roblox&#10;Valorant"></textarea>
+      <p class="helper">Mínimo 2 opciones, máximo 10.</p>
+    </div>
+    <button id="createPollBtn" class="btn" type="button">Crear encuesta</button>
+  </section>
+
+  <section id="polls" class="polls"></section>
+</main>
+
+<footer>
+  © 2026 Yalmil.com - <a href="aviso-legal.html">Aviso legal</a> - <a href="privacidad.html">Privacidad</a>
+</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getDatabase, ref, get, push, set, update, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA1s25GbpU-sgSJrqbxqkNLFFWp64z1ObM",
+  authDomain: "dominioyalmil.firebaseapp.com",
+  databaseURL: "https://dominioyalmil-default-rtdb.firebaseio.com",
+  projectId: "dominioyalmil",
+  storageBucket: "dominioyalmil.firebasestorage.app",
+  messagingSenderId: "1073517122536",
+  appId: "1:1073517122536:web:8dfc307dfe7b54b9a18a5d"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+const logoLink = document.getElementById("logoLink");
+const navLoginLink = document.querySelector('nav a[href="lojin.html"]');
+const statusEl = document.getElementById("status");
+const adminPanel = document.getElementById("adminPanel");
+const createPollBtn = document.getElementById("createPollBtn");
+const pollTitleEl = document.getElementById("pollTitle");
+const pollOptionsEl = document.getElementById("pollOptions");
+const pollsEl = document.getElementById("polls");
+
+let currentUser = null;
+let currentIsAdmin = false;
+
+function normalizeEmail(email) {
+  return (email || "").trim().toLowerCase();
+}
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return decodeURIComponent(parts.pop().split(";").shift());
+  return "";
+}
+
+function updateNavProfile(user) {
+  if (!navLoginLink) return;
+  if (!navLoginLink.dataset.defaultLabel) navLoginLink.dataset.defaultLabel = navLoginLink.textContent.trim() || "Login";
+
+  const photoURL = (user && user.photoURL) || getCookie("userPhoto");
+  if (user && photoURL) {
+    navLoginLink.innerHTML = `<img src="${photoURL}" alt="Perfil" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #FFD700;display:block;">`;
+    navLoginLink.classList.add("profile-link");
+    navLoginLink.setAttribute("aria-label", "Perfil");
+  } else {
+    navLoginLink.textContent = navLoginLink.dataset.defaultLabel;
+    navLoginLink.classList.remove("profile-link");
+    navLoginLink.removeAttribute("aria-label");
+  }
+}
+
+function collectAdminEmails(value, setOut) {
+  if (!value) return;
+  if (typeof value === "string" && value.includes("@")) {
+    setOut.add(normalizeEmail(value));
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach(v => collectAdminEmails(v, setOut));
+    return;
+  }
+  if (typeof value === "object") {
+    Object.entries(value).forEach(([key, val]) => {
+      if (key.includes("@")) setOut.add(normalizeEmail(key));
+      if (val === true && key) {
+        setOut.add(normalizeEmail(key.replace(/,/g, ".")));
+        setOut.add(normalizeEmail(decodeURIComponent(key)));
+      }
+      if (val && typeof val === "object" && typeof val.email === "string") {
+        setOut.add(normalizeEmail(val.email));
+      }
+      if (typeof val === "string" && val.includes("@")) {
+        setOut.add(normalizeEmail(val));
+      }
+    });
+  }
+}
+
+async function isEmailAdmin(email) {
+  const normalized = normalizeEmail(email);
+  if (!normalized) return false;
+
+  const directPaths = [
+    `admins/gmail/${normalized}`,
+    `admins/gmail/${normalized.replace(/\./g, ",")}`,
+    `admins/gmail/${encodeURIComponent(normalized)}`,
+    `admins/${normalized}`,
+    `admins/${normalized.replace(/\./g, ",")}`,
+    `admins/${encodeURIComponent(normalized)}`
+  ];
+
+  for (const path of directPaths) {
+    try {
+      const snap = await get(ref(db, path));
+      if (!snap.exists()) continue;
+      const v = snap.val();
+      if (v === true) return true;
+      if (typeof v === "string" && normalizeEmail(v) === normalized) return true;
+      if (v && typeof v === "object") {
+        if (typeof v.email === "string" && normalizeEmail(v.email) === normalized) return true;
+        if (v.admin === true || v.enabled === true) return true;
+      }
+    } catch (_e) {}
+  }
+
+  try {
+    const adminsRoot = await get(ref(db, "admins"));
+    if (!adminsRoot.exists()) return false;
+    const setOut = new Set();
+    collectAdminEmails(adminsRoot.val(), setOut);
+    return setOut.has(normalized) || setOut.has(normalized.replace(/\./g, ","));
+  } catch (_e) {
+    return false;
+  }
+}
+
+function fmtDate(ts) {
+  const n = Number(ts || 0);
+  if (!Number.isFinite(n) || n <= 0) return "Sin fecha";
+  return new Date(n).toLocaleString("es-MX");
+}
+
+function setStatus(text, isError = false) {
+  statusEl.textContent = text;
+  statusEl.className = `notice${isError ? " error" : ""}`;
+}
+
+function renderPolls(pollsData) {
+  const polls = Object.entries(pollsData || {}).map(([id, p]) => ({ id, ...p }));
+  polls.sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0));
+
+  if (polls.length === 0) {
+    pollsEl.innerHTML = '<div class="notice">No hay encuestas todavía.</div>';
+    return;
+  }
+
+  pollsEl.innerHTML = polls.map((poll) => {
+    const options = Array.isArray(poll.options) ? poll.options : [];
+    const votes = poll.votes && typeof poll.votes === "object" ? poll.votes : {};
+    const userVote = currentUser && poll.userVotes && poll.userVotes[currentUser.uid] ? poll.userVotes[currentUser.uid] : null;
+
+    const optionsHtml = options.map((opt, idx) => {
+      const count = Number(votes[idx] || 0);
+      const votedThis = userVote === idx;
+      const disableVote = !currentUser || userVote !== null;
+      return `
+        <div class="option">
+          <span>${opt} (${count} voto${count === 1 ? "" : "s"})${votedThis ? " - tu voto" : ""}</span>
+          <button type="button" data-poll="${poll.id}" data-option="${idx}" ${disableVote ? "disabled" : ""}>Votar</button>
+        </div>
+      `;
+    }).join("");
+
+    return `
+      <article class="poll">
+        <h4>${poll.title || "Encuesta sin título"}</h4>
+        <p class="poll-meta">Creada por ${poll.createdByEmail || "admin"} - ${fmtDate(poll.createdAt)}</p>
+        <div class="options">${optionsHtml}</div>
+      </article>
+    `;
+  }).join("");
+
+  pollsEl.querySelectorAll("button[data-poll]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const pollId = btn.getAttribute("data-poll");
+      const optionIdx = Number(btn.getAttribute("data-option"));
+      await votePoll(pollId, optionIdx);
+    });
+  });
+}
+
+async function votePoll(pollId, optionIdx) {
+  if (!currentUser) {
+    setStatus("Debes iniciar sesión para votar.", true);
+    return;
+  }
+
+  try {
+    const userVoteRef = ref(db, `encuestas/${pollId}/userVotes/${currentUser.uid}`);
+    const existing = await get(userVoteRef);
+    if (existing.exists()) {
+      setStatus("Ya votaste en esta encuesta.", true);
+      return;
+    }
+
+    const votesRef = ref(db, `encuestas/${pollId}/votes/${optionIdx}`);
+    const votesSnap = await get(votesRef);
+    const currentCount = votesSnap.exists() ? Number(votesSnap.val() || 0) : 0;
+
+    await update(ref(db, `encuestas/${pollId}`), {
+      [`votes/${optionIdx}`]: currentCount + 1,
+      [`userVotes/${currentUser.uid}`]: optionIdx
+    });
+
+    setStatus("Voto registrado.");
+  } catch (error) {
+    console.error(error);
+    setStatus("No se pudo registrar el voto.", true);
+  }
+}
+
+createPollBtn.addEventListener("click", async () => {
+  if (!currentUser || !currentIsAdmin) {
+    setStatus("Solo admins pueden crear encuestas.", true);
+    return;
+  }
+
+  const title = (pollTitleEl.value || "").trim();
+  const options = (pollOptionsEl.value || "").split("\n").map(v => v.trim()).filter(Boolean);
+
+  if (!title) {
+    setStatus("Escribe un título para la encuesta.", true);
+    return;
+  }
+
+  if (options.length < 2 || options.length > 10) {
+    setStatus("La encuesta debe tener entre 2 y 10 opciones.", true);
+    return;
+  }
+
+  try {
+    createPollBtn.disabled = true;
+    createPollBtn.textContent = "Creando...";
+
+    const votes = {};
+    options.forEach((_, idx) => { votes[idx] = 0; });
+
+    const newRef = push(ref(db, "encuestas"));
+    await set(newRef, {
+      title,
+      options,
+      votes,
+      userVotes: {},
+      createdByUid: currentUser.uid,
+      createdByEmail: currentUser.email || "",
+      createdAt: serverTimestamp()
+    });
+
+    pollTitleEl.value = "";
+    pollOptionsEl.value = "";
+    setStatus("Encuesta creada correctamente.");
+  } catch (error) {
+    console.error(error);
+    setStatus("No se pudo crear la encuesta.", true);
+  } finally {
+    createPollBtn.disabled = false;
+    createPollBtn.textContent = "Crear encuesta";
+  }
+});
+
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user;
+  updateNavProfile(user);
+  logoLink.href = "index.html";
+
+  if (!user) {
+    currentIsAdmin = false;
+    adminPanel.style.display = "none";
+    setStatus("Inicia sesión para votar. Solo los admins pueden crear encuestas.");
+  } else {
+    currentIsAdmin = await isEmailAdmin(user.email || "");
+
+    if (currentIsAdmin) {
+      adminPanel.style.display = "block";
+      logoLink.href = "admin.html";
+      logoLink.title = "Panel admin";
+      setStatus(`Modo admin activo (${user.email || "sin email"}). Puedes crear encuestas.`);
+    } else {
+      adminPanel.style.display = "none";
+      setStatus(`Sesión iniciada como ${user.email || "usuario"}. Puedes votar en las encuestas.`);
+    }
+  }
+});
+
+onValue(ref(db, "encuestas"), (snap) => {
+  renderPolls(snap.exists() ? snap.val() : {});
+});
+</script>
+
+</body>
+</html>
